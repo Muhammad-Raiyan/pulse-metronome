@@ -1,0 +1,427 @@
+[
+  {
+    "id": "song-test",
+    "title": "Test Suite (Quick Section Switch)",
+    "artist": "Metronome Dev",
+    "album": "Automation Sandbox",
+    "bpm": 120,
+    "beatsPerBar": 4,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "1. Slow Intro (100 BPM)", "bars": 2, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "2. Mid Groove (120 BPM - 8ths)", "bars": 2, "bpm": 120, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 3, "name": "3. Speed Burst (160 BPM - 16ths)", "bars": 2, "bpm": 160, "beatsPerBar": 4, "subdivision": 4 },
+      { "id": 4, "name": "4. Odd Time Breakdown (130 BPM in 3/4)", "bars": 2, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rtl-01",
+    "title": "Fight Fire With Fire",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 192,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Acoustic Intro", "bars": 8, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 },
+      { "id": 2, "name": "Fast Downpicking Thrash", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Guitar Solo", "bars": 12, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rtl-02",
+    "title": "Ride the Lightning",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 150,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Intro / Main Riff", "bars": 12, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Verse & Chorus", "bars": 16, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Solo Section", "bars": 16, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rtl-03",
+    "title": "For Whom the Bell Tolls",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 118,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rtl-04",
+    "title": "Fade to Black",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 112,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Acoustic Verse", "bars": 16, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Fast Outro Solo", "bars": 16, "bpm": 140, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rtl-05",
+    "title": "Trapped Under Ice",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 160,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rtl-06",
+    "title": "Escape",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 142,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rtl-07",
+    "title": "Creeping Death",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 198,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Main Downpick Riff", "bars": 16, "bpm": 198, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Die Breakdown", "bars": 8, "bpm": 198, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rtl-08",
+    "title": "The Call of Ktulu",
+    "artist": "Metallica",
+    "album": "Ride the Lightning",
+    "bpm": 138,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "mop-01",
+    "title": "Battery",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 192,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Acoustic Intro", "bars": 12, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Galloping Thrash Riff", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Verse / Chorus", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "mop-02",
+    "title": "Master of Puppets",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 212,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "beatAccents": [0, 1, 1, 1],
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Fast Main Riff", "bars": 12, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Verse 1", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Clean Interlude", "bars": 8, "bpm": 110, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 4, "name": "Guitar Solo", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "mop-03",
+    "title": "The Thing That Should Not Be",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 110,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "mop-04",
+    "title": "Welcome Home (Sanitarium)",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 104,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Clean Verse", "bars": 16, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Fast Outro Riff", "bars": 16, "bpm": 170, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "mop-05",
+    "title": "Disposable Heroes",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 180,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "mop-06",
+    "title": "Leper Messiah",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 138,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Mid-Tempo Groove", "bars": 16, "bpm": 138, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Solo Speed Up", "bars": 12, "bpm": 180, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "mop-07",
+    "title": "Orion",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 128,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Main Heavy Groove", "bars": 16, "bpm": 128, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Bass Solo Interlude", "bars": 12, "bpm": 64, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 3, "name": "Outro Riff", "bars": 16, "bpm": 128, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "mop-08",
+    "title": "Damage, Inc.",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 184,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "ajfa-01",
+    "title": "Blackened",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 190,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Reverse Guitar Intro", "bars": 8, "bpm": 130, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Main Thrash Riff", "bars": 16, "bpm": 190, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "ajfa-02",
+    "title": "...And Justice for All",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 172,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Clean Intro", "bars": 12, "bpm": 86, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Progressive Main Riff", "bars": 16, "bpm": 172, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "ajfa-03",
+    "title": "Eye of the Beholder",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 122,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "ajfa-04",
+    "title": "One",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 108,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Clean Verse", "bars": 16, "bpm": 108, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 108, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Machine Gun Riff", "bars": 12, "bpm": 142, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 4, "name": "Outro Solo", "bars": 16, "bpm": 142, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "ajfa-05",
+    "title": "The Shortest Straw",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 142,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "ajfa-06",
+    "title": "Harvester of Sorrow",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 92,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "ajfa-07",
+    "title": "The Frayed Ends of Sanity",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 136,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "ajfa-08",
+    "title": "To Live Is to Die",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 104,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Acoustic Intro", "bars": 8, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Clean Interlude", "bars": 8, "bpm": 72, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Heavy Outro", "bars": 12, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "ajfa-09",
+    "title": "Dyers Eve",
+    "artist": "Metallica",
+    "album": "...And Justice for All",
+    "bpm": 194,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rip-01",
+    "title": "Holy Wars... The Punishment Due",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 168,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Holy Wars Riff", "bars": 16, "bpm": 168, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Acoustic Bridge", "bars": 4, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "The Punishment Due", "bars": 16, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 4, "name": "Final Speed Solo", "bars": 12, "bpm": 168, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rip-02",
+    "title": "Hangar 18",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 230,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rip-03",
+    "title": "Take No Prisoners",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 210,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Technical Intro", "bars": 8, "bpm": 160, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Fast Verse", "bars": 16, "bpm": 210, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rip-04",
+    "title": "Five Magics",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 185,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Bass Build Intro", "bars": 12, "bpm": 88, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "High Speed Riffing", "bars": 16, "bpm": 185, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rip-05",
+    "title": "Poison Was the Cure",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 220,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Bass Intro", "bars": 6, "bpm": 162, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Speed Sprint", "bars": 16, "bpm": 220, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rip-06",
+    "title": "Lucretia",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 110,
+    "beatsPerBar": 4,
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Main Swing Riff", "bars": 16, "bpm": 110, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Solo Ramp Up", "bars": 12, "bpm": 170, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "rip-07",
+    "title": "Tornado of Souls",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 194,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rip-08",
+    "title": "Dawn Patrol",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 75,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  },
+  {
+    "id": "rip-09",
+    "title": "Rust in Peace... Polaris",
+    "artist": "Megadeth",
+    "album": "Rust in Peace",
+    "bpm": 168,
+    "beatsPerBar": 4,
+    "subdivision": 1
+  }
+]
