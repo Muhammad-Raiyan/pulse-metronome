@@ -248,34 +248,50 @@ export function Metronome() {
     };
   }, []);
 
-  const togglePlay = () => {
-    if (isPlaying) {
-      workerRef.current.postMessage({ command: 'stop' });
-      setIsPlaying(false);
-      setIsSprintPhase(false);
-      setIsDelayPhase(false);
-      setIsMutePhase(false);
-      setUnitsElapsed(0);
-      setDelayBarsElapsed(0);
-      setActiveBeat({ beat: 0, sub: 0 });
-    } else {
-      setUnitsElapsed(0);
-      setDelayBarsElapsed(0);
-      setIsSprintPhase(false);
-      setIsMutePhase(false);
-
-      if (startDelayBars > 0) {
-        setIsDelayPhase(true);
-      }
-
-      if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
-        setBpm(jogBpm);
-      }
-      audioEngineRef.current.start(bpm);
-      workerRef.current.postMessage({ command: 'start' });
-      setIsPlaying(true);
+ const togglePlay = () => {
+  if (isPlaying) {
+    workerRef.current.postMessage({ command: 'stop' });
+    setIsPlaying(false);
+    setIsSprintPhase(false);
+    setIsDelayPhase(false);
+    setIsMutePhase(false);
+    setUnitsElapsed(0);
+    setDelayBarsElapsed(0);
+    setActiveBeat({ beat: 0, sub: 0 });
+  } else {
+    // 1. MUST INITIALIZE & RESUME AUDIO CONTEXT SYNCHRONOUSLY ON USER TAP
+    if (!audioEngineRef.current) {
+      audioEngineRef.current = new AudioEngine();
     }
-  };
+    audioEngineRef.current.init();
+
+    // 2. Play a brief silent buffer to guarantee iOS Safari context unlock
+    if (audioEngineRef.current.audioCtx) {
+      const buffer = audioEngineRef.current.audioCtx.createBuffer(1, 1, 22050);
+      const source = audioEngineRef.current.audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioEngineRef.current.audioCtx.destination);
+      source.start(0);
+    }
+
+    setUnitsElapsed(0);
+    setDelayBarsElapsed(0);
+    setIsSprintPhase(false);
+    setIsMutePhase(false);
+
+    if (startDelayBars > 0) {
+      setIsDelayPhase(true);
+    }
+
+    if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
+      setBpm(jogBpm);
+    }
+
+    audioEngineRef.current.start(bpm);
+    workerRef.current.postMessage({ command: 'start' });
+    setIsPlaying(true);
+  }
+};
 
   const handleTapTempo = () => {
     const now = performance.now();

@@ -71,6 +71,10 @@ export class AudioEngine {
   playTone(time, isMainBeat, beatNum, state) {
     if (!this.audioCtx) return;
 
+    // Auto-resume if context was suspended by mobile browser power-saving
+    if (this.audioCtx.state === 'suspended') {
+        this.audioCtx.resume();
+    }
     // 0. MUTE TRAINER SILENT BAR CHECK
     if (state.isMutePhase) return;
 

@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// https://vite.dev/config/
 export default defineConfig({
+  base: '/pulse-metronome/',
   plugins: [
     react(),
     tailwindcss(),
@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'Pulse Metronome',
         short_name: 'Pulse',
         description: 'Zero-lag precision metronome with advanced automation routines.',
-        theme_color: '#020617', // slate-950
+        theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
         orientation: 'portrait',
@@ -39,5 +39,5 @@ export default defineConfig({
         ]
       }
     })
-  ],
-})
+  ]
+});
