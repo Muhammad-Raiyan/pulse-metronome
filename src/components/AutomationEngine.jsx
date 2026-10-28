@@ -1,9 +1,11 @@
-import React from 'react';
-import { 
-  AUTOMATION_MODES, 
-  SPRINT_STRATEGIES, 
-  SUBDIV_METRICS, 
-  SUBDIVISION_OPTIONS 
+import { NumberInput } from './NumberInput';
+import {
+  AUTOMATION_MODES,
+  SPRINT_STRATEGIES,
+  SUBDIV_METRICS,
+  SUBDIVISION_OPTIONS,
+  MIN_BPM,
+  MAX_BPM
 } from '../constants';
 import { 
   Sliders, 
@@ -138,34 +140,19 @@ export function AutomationEngine({
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 mb-1">Every (Bars)</label>
-              <input
-                type="number"
-                min="1"
-                max="64"
-                value={gradualInterval}
-                onChange={(e) => setGradualInterval(Math.max(1, Number(e.target.value)))}
+              <NumberInput min={1} max={64} value={gradualInterval} onChange={setGradualInterval}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 mb-1">Add (+BPM)</label>
-              <input
-                type="number"
-                min="1"
-                max="30"
-                value={gradualStep}
-                onChange={(e) => setGradualStep(Math.max(1, Number(e.target.value)))}
+              <NumberInput min={1} max={30} value={gradualStep} onChange={setGradualStep}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
             <div>
               <label className="block text-[10px] font-semibold text-slate-400 mb-1">Cap Limit</label>
-              <input
-                type="number"
-                min="40"
-                max="300"
-                value={gradualCap}
-                onChange={(e) => setGradualCap(Math.max(40, Number(e.target.value)))}
+              <NumberInput min={40} max={300} value={gradualCap} onChange={setGradualCap}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
@@ -213,23 +200,13 @@ export function AutomationEngine({
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[9px] text-slate-500 mb-0.5">BPM</label>
-                    <input
-                      type="number"
-                      min="30"
-                      max="300"
-                      value={jogBpm}
-                      onChange={(e) => setJogBpm(Number(e.target.value))}
+                    <NumberInput min={MIN_BPM} max={MAX_BPM} value={jogBpm} onChange={setJogBpm}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                     />
                   </div>
                   <div>
                     <label className="block text-[9px] text-slate-500 mb-0.5">Bars</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="32"
-                      value={jogBars}
-                      onChange={(e) => setJogBars(Number(e.target.value))}
+                    <NumberInput min={1} max={32} value={jogBars} onChange={setJogBars}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                     />
                   </div>
@@ -241,23 +218,13 @@ export function AutomationEngine({
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[9px] text-slate-500 mb-0.5">BPM</label>
-                    <input
-                      type="number"
-                      min="30"
-                      max="300"
-                      value={sprintBpm}
-                      onChange={(e) => setSprintBpm(Number(e.target.value))}
+                    <NumberInput min={MIN_BPM} max={MAX_BPM} value={sprintBpm} onChange={setSprintBpm}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                     />
                   </div>
                   <div>
                     <label className="block text-[9px] text-slate-500 mb-0.5">Bars</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="32"
-                      value={sprintBars}
-                      onChange={(e) => setSprintBars(Number(e.target.value))}
+                    <NumberInput min={1} max={32} value={sprintBars} onChange={setSprintBars}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                     />
                   </div>
@@ -314,12 +281,7 @@ export function AutomationEngine({
                       <label className="block text-[9px] text-slate-500 mb-0.5">
                         {subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats'}
                       </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="32"
-                        value={jogUnits}
-                        onChange={(e) => setJogUnits(Number(e.target.value))}
+                      <NumberInput min={1} max={32} value={jogUnits} onChange={setJogUnits}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                       />
                     </div>
@@ -348,12 +310,7 @@ export function AutomationEngine({
                       <label className="block text-[9px] text-slate-500 mb-0.5">
                         {subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats'}
                       </label>
-                      <input
-                        type="number"
-                        min="1"
-                        max="32"
-                        value={sprintUnits}
-                        onChange={(e) => setSprintUnits(Number(e.target.value))}
+                      <NumberInput min={1} max={32} value={sprintUnits} onChange={setSprintUnits}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                       />
                     </div>
@@ -375,23 +332,13 @@ export function AutomationEngine({
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-900/80 border border-slate-800/80 p-2.5 rounded-xl space-y-1">
               <label className="block text-[10px] font-semibold text-slate-400">🔊 Play Bars</label>
-              <input
-                type="number"
-                min="1"
-                max="32"
-                value={muteBarsPlay}
-                onChange={(e) => setMuteBarsPlay(Math.max(1, Number(e.target.value)))}
+              <NumberInput min={1} max={32} value={muteBarsPlay} onChange={setMuteBarsPlay}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-slate-100"
               />
             </div>
             <div className="bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-xl space-y-1">
               <label className="block text-[10px] font-semibold text-rose-300">🔇 Silent Bars</label>
-              <input
-                type="number"
-                min="1"
-                max="32"
-                value={muteBarsSilent}
-                onChange={(e) => setMuteBarsSilent(Math.max(1, Number(e.target.value)))}
+              <NumberInput min={1} max={32} value={muteBarsSilent} onChange={setMuteBarsSilent}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-rose-300"
               />
             </div>

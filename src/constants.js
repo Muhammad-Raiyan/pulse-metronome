@@ -1,3 +1,10 @@
+export const MIN_BPM = 30;
+export const MAX_BPM = 300;
+export const clampBpm = (value) => {
+  const n = Math.round(Number(value));
+  return Number.isFinite(n) ? Math.min(MAX_BPM, Math.max(MIN_BPM, n)) : MIN_BPM;
+};
+
 export const AUTOMATION_MODES = {
   MANUAL: 'manual',
   RAMP: 'gradual',
@@ -35,5 +42,3 @@ export const SUBDIVISION_OPTIONS = [
   { value: 9, label: '9x Nontuplets' },
   { value: 10, label: '10x Decuplets' }
 ];
-
-export const SUBDIVISION_VALUES = SUBDIVISION_OPTIONS.map((opt) => opt.value);

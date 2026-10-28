@@ -1,6 +1,5 @@
 // src/components/MetronomeControls.jsx
 
-import React from 'react';
 import { SUBDIVISION_OPTIONS } from '../constants';
 import { Play, Square, Timer, Sliders } from 'lucide-react';
 

@@ -52,9 +52,6 @@ If you are developing on Windows, Git may default to converting `LF` line ending
 ```powershell
 # Set global or repo-level line ending conversion
 git config core.autocrlf true
-
-# If using Oxlint / Prettier / ESLint and seeing line break errors, format files:
-npx prettier --write .
 ```
 
 ### 3. Install Dependencies

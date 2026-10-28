@@ -1,13 +1,13 @@
 // src/components/Metronome.jsx
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
-import { AUTOMATION_MODES, SPRINT_STRATEGIES, SUBDIV_METRICS } from '../constants';
+import { AUTOMATION_MODES, SPRINT_STRATEGIES, SUBDIV_METRICS, ACCENT_TYPES, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
 export function Metronome() {
   // --- Core Metronome Configuration ---
@@ -15,7 +15,7 @@ export function Metronome() {
   const [bpm, setBpm] = useState(120);
   const [beatsPerBar, setBeatsPerBar] = useState(4);
   const [subdivision, setSubdivision] = useState(1);
-  const [volume, _setVolume] = useState(0.8); // Fixed warning #1: unused setVolume -> _setVolume
+  const volume = 0.8;
   const [activeBeat, setActiveBeat] = useState({ beat: 0, sub: 0 });
 
   // --- Song Map State ---
@@ -26,26 +26,34 @@ export function Metronome() {
   const [beatAccents, setBeatAccents] = useState([0, 1, 1, 1]);
 
   // Fixed warning #2: Helper to handle beatsPerBar change & state update together without setState in useEffect
-  const handleBeatsPerBarChange = (newBeats) => {
+  const handleBeatsPerBarChange = useCallback((newBeats) => {
     setBeatsPerBar(newBeats);
     setBeatAccents((prev) => {
       const updated = [...prev];
-      updated[0] = 0;
+      updated[0] = ACCENT_TYPES.ACCENT;
       while (updated.length < newBeats) {
-        updated.push(1); // Default new beats to Normal
+        updated.push(ACCENT_TYPES.NORMAL); // Default new beats to Normal
       }
       return updated.slice(0, newBeats);
     });
-  };
+  }, []);
 
   const toggleBeatAccent = (index) => {
     setBeatAccents((prev) => {
       const next = [...prev];
-      const current = next[index] !== undefined ? next[index] : 1;
-      next[index] = (current + 1) % 4; // Cycle 0 -> 1 -> 2 -> 3
+      const current = next[index] !== undefined ? next[index] : ACCENT_TYPES.NORMAL;
+      next[index] = (current + 1) % Object.keys(ACCENT_TYPES).length; // Cycle 0 -> 1 -> 2 -> 3
       return next;
     });
   };
+
+  // Apply a song-map section's tempo / meter / subdivision to the live state
+  const applySection = useCallback((sec) => {
+    if (!sec) return;
+    if (sec.bpm) setBpm(clampBpm(sec.bpm));
+    if (sec.beatsPerBar) handleBeatsPerBarChange(sec.beatsPerBar);
+    setSubdivision(sec.subdivision || 1);
+  }, [handleBeatsPerBarChange]);
 
   // --- Count-In Delay Configuration ---
   const [startDelayBars, setStartDelayBars] = useState(0);
@@ -199,16 +207,11 @@ export function Metronome() {
             const nextIndex = s.currentSectionIndex + 1;
 
             if (nextIndex < s.activeSongMap.sections.length) {
-              const nextSec = s.activeSongMap.sections[nextIndex];
               setCurrentSectionIndex(nextIndex);
-
-              if (nextSec.bpm) setBpm(nextSec.bpm);
-              if (nextSec.beatsPerBar) handleBeatsPerBarChange(nextSec.beatsPerBar);
-              if (nextSec.subdivision) setSubdivision(nextSec.subdivision);
+              applySection(s.activeSongMap.sections[nextIndex]);
             } else {
               setCurrentSectionIndex(0);
-              const firstSec = s.activeSongMap.sections[0];
-              if (firstSec.bpm) setBpm(firstSec.bpm);
+              applySection(s.activeSongMap.sections[0]);
             }
             return 0;
           }
@@ -255,7 +258,7 @@ export function Metronome() {
     audioEngineRef.current = new AudioEngine();
 
     workerRef.current = new Worker(
-      new URL('/src/audio/schedulerWorker.js', import.meta.url),
+      new URL('../audio/schedulerWorker.js', import.meta.url),
       { type: 'module' }
     );
 
@@ -318,14 +321,25 @@ export function Metronome() {
       }
 
       if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
-        setBpm(jogBpm);
+        setBpm(clampBpm(jogBpm));
+      } else if (automationMode === AUTOMATION_MODES.SONG_MAP) {
+        applySection(activeSongMap?.sections?.[0]);
       }
 
-      audioEngineRef.current.start(bpm);
+      audioEngineRef.current.start();
       workerRef.current.postMessage({ command: 'start' });
       setIsPlaying(true);
     }
-  }, [isPlaying, startDelayBars, automationMode, sprintType, jogBpm, bpm]);
+  }, [isPlaying, startDelayBars, automationMode, sprintType, jogBpm, activeSongMap, applySection]);
+
+  // Switching mode must not carry phase state (silent bar, sprint bell, counters) over
+  const handleModeChange = (mode) => {
+    setAutomationMode(mode);
+    setIsSprintPhase(false);
+    setIsMutePhase(false);
+    setUnitsElapsed(0);
+    setCurrentSectionIndex(0);
+  };
 
   const handleTapTempo = useCallback(() => {
     const now = performance.now();
@@ -338,7 +352,7 @@ export function Metronome() {
         intervals.push(tapTimesRef.current[i] - tapTimesRef.current[i - 1]);
       }
       const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
-      setBpm(Math.min(300, Math.max(30, Math.round(60000 / avgInterval))));
+      setBpm(clampBpm(60000 / avgInterval));
     }
   }, []);
 
@@ -356,11 +370,11 @@ export function Metronome() {
       } else if (e.code === 'ArrowUp') {
         e.preventDefault();
         const delta = e.altKey ? 8 : e.shiftKey ? 4 : 1;
-        setBpm((b) => Math.min(300, b + delta));
+        setBpm((b) => Math.min(MAX_BPM, b + delta));
       } else if (e.code === 'ArrowDown') {
         e.preventDefault();
         const delta = e.altKey ? 8 : e.shiftKey ? 4 : 1;
-        setBpm((b) => Math.max(30, b - delta));
+        setBpm((b) => Math.max(MIN_BPM, b - delta));
       } else if (e.code === 'KeyT') {
         e.preventDefault();
         handleTapTempo();
@@ -378,12 +392,12 @@ export function Metronome() {
 
     if (song.sections && song.sections.length > 0) {
       const firstSec = song.sections[0];
-      setBpm(firstSec.bpm || song.bpm || 120);
+      setBpm(clampBpm(firstSec.bpm || song.bpm || 120));
       if (firstSec.beatsPerBar) handleBeatsPerBarChange(firstSec.beatsPerBar);
       setSubdivision(firstSec.subdivision || song.subdivision || 1);
       setAutomationMode(AUTOMATION_MODES.SONG_MAP);
     } else {
-      if (song.bpm) setBpm(song.bpm);
+      if (song.bpm) setBpm(clampBpm(song.bpm));
       if (song.beatsPerBar) handleBeatsPerBarChange(song.beatsPerBar);
       if (song.subdivision) setSubdivision(song.subdivision);
     }
@@ -456,7 +470,7 @@ export function Metronome() {
         <div className="lg:col-span-5 space-y-6">
           <AutomationEngine
             automationMode={automationMode}
-            setAutomationMode={setAutomationMode}
+            setAutomationMode={handleModeChange}
             gradualInterval={gradualInterval}
             setGradualInterval={setGradualInterval}
             gradualStep={gradualStep}

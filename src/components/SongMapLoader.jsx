@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Music, Disc, User, Check, X } from 'lucide-react';
 
 export function SongMapLoader({ onSelectSong }) {
@@ -81,7 +81,7 @@ export function SongMapLoader({ onSelectSong }) {
           <p className="text-xs text-slate-400 font-medium">No matching songs found</p>
         </div>
       ) : (
-        <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+        <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
           {filteredSongs.map((song) => {
             const isSelected = selectedSongId === song.id;
 

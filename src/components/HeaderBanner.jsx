@@ -1,4 +1,3 @@
-import React from 'react';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES } from '../constants';
 import { AlertCircle, Flame, Timer, VolumeX, Volume2, Music } from 'lucide-react';
 

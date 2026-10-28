@@ -1,5 +1,5 @@
-import React from 'react';
 import { Plus, Minus, Hand, VolumeX } from 'lucide-react';
+import { ACCENT_TYPES } from '../constants';
 
 export function MainDisplay({
   bpm,
@@ -27,20 +27,20 @@ export function MainDisplay({
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {Array.from({ length: beatsPerBar }).map((_, i) => {
             const isActive = isPlaying && activeBeat.beat === i;
-            const accentType = beatAccents[i] !== undefined ? beatAccents[i] : (i === 0 ? 0 : 1);
+            const accentType = beatAccents[i] !== undefined ? beatAccents[i] : (i === 0 ? ACCENT_TYPES.ACCENT : ACCENT_TYPES.NORMAL);
 
             let accentStyles = 'bg-slate-950 border-slate-800 text-slate-400';
-            if (accentType === 0) { // Accented
+            if (accentType === ACCENT_TYPES.ACCENT) { // Accented
               accentStyles = 'border-2 border-cyan-400 text-cyan-300 font-black shadow-md shadow-cyan-500/20';
-            } else if (accentType === 1) { // Normal
+            } else if (accentType === ACCENT_TYPES.NORMAL) { // Normal
               accentStyles = 'bg-slate-950 border border-slate-800 text-slate-300';
-            } else if (accentType === 2) { // Soft
+            } else if (accentType === ACCENT_TYPES.SOFT) { // Soft
               accentStyles = 'bg-slate-950/50 border border-slate-800/60 text-slate-500 scale-95';
-            } else if (accentType === 3) { // Muted
+            } else if (accentType === ACCENT_TYPES.MUTED) { // Muted
               accentStyles = 'bg-slate-950/30 border border-rose-900/40 text-rose-500/50 scale-90';
             }
 
-            if (isActive && accentType !== 3) {
+            if (isActive && accentType !== ACCENT_TYPES.MUTED) {
               accentStyles = 'bg-cyan-500 text-slate-950 scale-110 shadow-lg shadow-cyan-500/50 font-black';
             }
 
@@ -52,7 +52,7 @@ export function MainDisplay({
                 className={`w-11 h-11 md:w-13 md:h-13 rounded-xl flex flex-col items-center justify-center font-mono transition-all duration-75 cursor-pointer relative ${accentStyles}`}
               >
                 <span>{i + 1}</span>
-                {accentType === 3 && <VolumeX className="w-3 h-3 text-rose-500 absolute bottom-1" />}
+                {accentType === ACCENT_TYPES.MUTED && <VolumeX className="w-3 h-3 text-rose-500 absolute bottom-1" />}
               </button>
             );
           })}

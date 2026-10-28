@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Pulse Metronome',
         short_name: 'Pulse',
@@ -18,7 +18,6 @@ export default defineConfig({
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
-        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -31,10 +30,10 @@ export default defineConfig({
             type: 'image/png'
           },
           {
-            src: 'pwa-512x512.png',
+            src: 'pwa-maskable-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'maskable'
           }
         ]
       }

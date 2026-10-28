@@ -1,3 +1,5 @@
+import { ACCENT_TYPES } from '../constants';
+
 export class AudioEngine {
   constructor() {
     this.audioCtx = null;
@@ -17,7 +19,7 @@ export class AudioEngine {
     }
   }
 
-  start(_bpm) {
+  start() {
     this.init();
     this.currentBeatInBar = 0;
     this.currentSubIndex = 0;
@@ -81,10 +83,10 @@ export class AudioEngine {
     // Read per-beat accent profile
     const beatAccent = (state.beatAccents && state.beatAccents[beatNum] !== undefined)
       ? state.beatAccents[beatNum]
-      : (beatNum === 0 ? 0 : 1);
+      : (beatNum === 0 ? ACCENT_TYPES.ACCENT : ACCENT_TYPES.NORMAL);
 
     // If beat tile is explicitly muted, skip tone
-    if (beatAccent === 3 && isMainBeat) return;
+    if (beatAccent === ACCENT_TYPES.MUTED && isMainBeat) return;
 
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
@@ -111,13 +113,13 @@ export class AudioEngine {
     // 3. REGULAR METRONOME CLICK WITH PER-BEAT ACCENTS
     else {
       if (isMainBeat) {
-        if (beatAccent === 0) { // Accented
+        if (beatAccent === ACCENT_TYPES.ACCENT) { // Accented
           freq = 1200;
           volume = 1.0;
-        } else if (beatAccent === 1) { // Normal
+        } else if (beatAccent === ACCENT_TYPES.NORMAL) { // Normal
           freq = 850;
           volume = 0.7;
-        } else if (beatAccent === 2) { // Soft
+        } else if (beatAccent === ACCENT_TYPES.SOFT) { // Soft
           freq = 650;
           volume = 0.35;
         }
