@@ -7,10 +7,17 @@ export function SongMapLoader({ onSelectSong }) {
   const [loading, setLoading] = useState(true);
   const [selectedSongId, setSelectedSongId] = useState(null);
 
-  // Fetch songs.json from public/ folder (works locally and on GitHub Pages)
   useEffect(() => {
-    fetch(import.meta.env.BASE_URL + 'songs.json')
-      .then((res) => res.json())
+    // Construct base-aware path (handles '/' locally and '/pulse-metronome/' on GitHub Pages)
+    const jsonUrl = `${import.meta.env.BASE_URL}songs.json`.replace(/([^:]\/)\/+/g, '$1');
+
+    fetch(jsonUrl)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status} while fetching ${jsonUrl}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setSongs(data);
         setLoading(false);
@@ -21,7 +28,6 @@ export function SongMapLoader({ onSelectSong }) {
       });
   }, []);
 
-  // Multi-field search filtering across title, artist, and album
   const filteredSongs = songs.filter((song) => {
     const q = searchTerm.toLowerCase().trim();
     if (!q) return true;
@@ -41,7 +47,6 @@ export function SongMapLoader({ onSelectSong }) {
 
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4 shadow-xl">
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2">
           <Music className="w-4 h-4 text-cyan-400" />
@@ -50,7 +55,6 @@ export function SongMapLoader({ onSelectSong }) {
         <span className="text-[10px] font-mono text-slate-500">{songs.length} Tracks</span>
       </div>
 
-      {/* Dynamic Typeahead Search Bar */}
       <div className="relative">
         <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-500" />
         <input
@@ -70,17 +74,11 @@ export function SongMapLoader({ onSelectSong }) {
         )}
       </div>
 
-      {/* Instant Results List */}
       {loading ? (
-        <p className="text-xs text-slate-500 py-4 text-center animate-pulse">
-          Loading library...
-        </p>
+        <p className="text-xs text-slate-500 py-4 text-center animate-pulse">Loading library...</p>
       ) : filteredSongs.length === 0 ? (
         <div className="p-4 text-center rounded-2xl bg-slate-950 border border-slate-800/60">
           <p className="text-xs text-slate-400 font-medium">No matching songs found</p>
-          <p className="text-[10px] text-slate-600 mt-0.5">
-            Try searching for another song, artist, or album.
-          </p>
         </div>
       ) : (
         <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
@@ -97,7 +95,6 @@ export function SongMapLoader({ onSelectSong }) {
                     : 'bg-slate-950 hover:bg-slate-800/70 border-slate-800/80'
                 }`}
               >
-                {/* Song Meta Information */}
                 <div className="space-y-1 min-w-0 pr-2">
                   <p className="font-semibold text-xs text-slate-100 truncate flex items-center gap-1.5">
                     {song.title}
@@ -117,7 +114,6 @@ export function SongMapLoader({ onSelectSong }) {
                   </div>
                 </div>
 
-                {/* Song Tempo & Time Signature Badge */}
                 <div className="text-right shrink-0">
                   <div className="font-mono text-cyan-400 font-bold text-xs">
                     {song.bpm} <span className="text-[10px] text-slate-500 font-normal">BPM</span>
