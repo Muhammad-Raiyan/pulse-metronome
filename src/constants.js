@@ -42,3 +42,4 @@ export const SUBDIVISION_OPTIONS = [
   { value: 9, label: '9x Nontuplets' },
   { value: 10, label: '10x Decuplets' }
 ];
+export const ACCENT_LABELS = ['Accented', 'Normal', 'Soft', 'Muted'];

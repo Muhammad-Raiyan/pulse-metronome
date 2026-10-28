@@ -2,13 +2,13 @@
 
 > **Built with AI Assistance**: Designed and engineered using conversational AI to produce a zero-latency, high-precision Web Audio metronome application.
 
-A zero-lag, production-ready Progressive Web Application (PWA) metronome built for precision practicing, rehearsal, and live performance. Powered by the **Web Audio API** and a **Web Worker lookahead scheduler**, Pulse Metronome delivers microsecond timing accuracy that never stutters, even when your browser tab loses focus or runs in the background.
+A zero-lag, production-ready Progressive Web Application (PWA) metronome built for precision practicing, rehearsal, and live performance. Powered by the **Web Audio API** and a **Web Worker lookahead scheduler**, Pulse Metronome delivers sample-accurate note timing that stays steady even when the tab is in the background.
 
 ---
 
 ## ✨ Features
 
-- 🎯 **Zero-Lag Web Worker Lookahead Scheduler**: Audio synthesis runs on an isolated background thread to prevent browser UI layout locks or scroll stutter from throwing off the tempo.
+- 🎯 **Zero-Lag Web Worker Lookahead Scheduler**: A Web Worker drives the scheduling clock, so timer throttling and UI layout work on the main thread are far less likely to throw off the tempo. Notes are scheduled ahead of time on the Web Audio clock.
 - 🥁 **Custom Beat Accents**: Click individual beat tiles to cycle accent dynamics (`Accented`, `Normal`, `Soft`, `Muted`).
 - ⚡ **Speed & Practice Automation Modes**:
   - **Manual Mode**: Classic fixed tempo control.
@@ -42,7 +42,7 @@ A zero-lag, production-ready Progressive Web Application (PWA) metronome built f
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/pulse-metronome.git
+git clone https://github.com/Muhammad-Raiyan/pulse-metronome.git
 cd pulse-metronome
 ```
 
@@ -114,10 +114,10 @@ npm run deploy
 This automatically compiles the production bundle in `dist/` and pushes it to your repository's `gh-pages` branch.
 
 ### 3. Enable GitHub Pages in Repo Settings
-1. Navigate to `https://github.com/YOUR_USERNAME/pulse-metronome`.
+1. Navigate to `https://github.com/Muhammad-Raiyan/pulse-metronome`.
 2. Go to **Settings** $\rightarrow$ **Pages**.
 3. Under **Build and deployment**, set **Source** to `Deploy from a branch` and select `gh-pages` / `/ (root)`.
-4. Save. Your app will be live at `https://YOUR_USERNAME.github.io/pulse-metronome/`.
+4. Save. Your app will be live at `https://muhammad-raiyan.github.io/pulse-metronome/`.
 
 ---
 
@@ -129,4 +129,4 @@ This automatically compiles the production bundle in `dist/` and pushes it to yo
 ---
 
 ## 📄 License
-MIT
+MIT License. See [LICENSE](LICENSE) for details.

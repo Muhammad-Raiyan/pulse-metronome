@@ -63,8 +63,8 @@ export function HeaderBanner({
               ? <><VolumeX className="w-3.5 h-3.5 text-rose-400 animate-pulse" /> 🔇 MUTE TRAINER (SILENT)</>
               : <><Volume2 className="w-3.5 h-3.5 text-cyan-400" /> 🔊 MUTE TRAINER (PLAYING)</>
           )}
-          {!isDelayPhase && automationMode === AUTOMATION_MODES.SONG_MAP && activeSongMap && (
-            <><Music className="w-3.5 h-3.5 text-cyan-400" /> {activeSongMap.title} — {currentSection?.name || 'Section'}</>
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.SONG_MAP && (
+            <><Music className="w-3.5 h-3.5 text-cyan-400" /> {activeSongMap ? `${activeSongMap.title}${currentSection ? ` - ${currentSection.name || 'Section'}` : ''}` : 'Song mode: pick a song'}</>
           )}
         </span>
       </span>

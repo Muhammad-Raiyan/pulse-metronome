@@ -1,4 +1,5 @@
 import { NumberInput } from './NumberInput';
+import { Select } from './Select';
 import {
   AUTOMATION_MODES,
   SPRINT_STRATEGIES,
@@ -47,8 +48,11 @@ export function AutomationEngine({
   muteBarsPlay,
   setMuteBarsPlay,
   muteBarsSilent,
-  setMuteBarsSilent
+  setMuteBarsSilent,
+  activeSongMap
 }) {
+  const hasSections = activeSongMap?.sections?.length > 0;
+
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-5 shadow-xl">
       {/* Header */}
@@ -57,15 +61,16 @@ export function AutomationEngine({
           <Sliders className="w-4 h-4 text-cyan-400" />
           <h2 className="font-bold text-sm text-slate-100">Automation Engine</h2>
         </div>
-        <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-800 text-slate-400">
+        <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-800 text-slate-400">
           Trainer
         </span>
       </div>
 
       {/* Mode Selector Tabs */}
-      <div className="grid grid-cols-5 gap-1 bg-slate-950 p-1 rounded-2xl border border-slate-800/80">
+      <div role="group" aria-label="Automation mode" className="grid grid-cols-5 gap-1 bg-slate-950 p-1 rounded-2xl border border-slate-800/80">
         <button
           onClick={() => setAutomationMode(AUTOMATION_MODES.MANUAL)}
+          aria-pressed={automationMode === AUTOMATION_MODES.MANUAL}
           className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer ${
             automationMode === AUTOMATION_MODES.MANUAL
               ? 'bg-slate-800 text-cyan-400 shadow-sm'
@@ -76,6 +81,7 @@ export function AutomationEngine({
         </button>
         <button
           onClick={() => setAutomationMode(AUTOMATION_MODES.RAMP)}
+          aria-pressed={automationMode === AUTOMATION_MODES.RAMP}
           className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
             automationMode === AUTOMATION_MODES.RAMP
               ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
@@ -87,6 +93,7 @@ export function AutomationEngine({
         </button>
         <button
           onClick={() => setAutomationMode(AUTOMATION_MODES.JOG_SPRINT)}
+          aria-pressed={automationMode === AUTOMATION_MODES.JOG_SPRINT}
           className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
             automationMode === AUTOMATION_MODES.JOG_SPRINT
               ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
@@ -98,6 +105,7 @@ export function AutomationEngine({
         </button>
         <button
           onClick={() => setAutomationMode(AUTOMATION_MODES.MUTE_TRAINER)}
+          aria-pressed={automationMode === AUTOMATION_MODES.MUTE_TRAINER}
           className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
             automationMode === AUTOMATION_MODES.MUTE_TRAINER
               ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm'
@@ -109,6 +117,7 @@ export function AutomationEngine({
         </button>
         <button
           onClick={() => setAutomationMode(AUTOMATION_MODES.SONG_MAP)}
+          aria-pressed={automationMode === AUTOMATION_MODES.SONG_MAP}
           className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
             automationMode === AUTOMATION_MODES.SONG_MAP
               ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm'
@@ -124,7 +133,7 @@ export function AutomationEngine({
       {automationMode === AUTOMATION_MODES.MANUAL && (
         <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800/60 text-center space-y-1">
           <p className="text-xs font-semibold text-slate-300">Manual Controls Active</p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-slate-400">
             Standard fixed-tempo operation.
           </p>
         </div>
@@ -139,20 +148,20 @@ export function AutomationEngine({
           </span>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Every (Bars)</label>
-              <NumberInput min={1} max={64} value={gradualInterval} onChange={setGradualInterval}
+              <label className="block text-[11px] font-semibold text-slate-400 mb-1">Every (Bars)</label>
+              <NumberInput min={1} max={64} aria-label="Ramp: raise tempo every N bars" value={gradualInterval} onChange={setGradualInterval}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Add (+BPM)</label>
-              <NumberInput min={1} max={30} value={gradualStep} onChange={setGradualStep}
+              <label className="block text-[11px] font-semibold text-slate-400 mb-1">Add (+BPM)</label>
+              <NumberInput min={1} max={30} aria-label="Ramp: BPM increase per step" value={gradualStep} onChange={setGradualStep}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Cap Limit</label>
-              <NumberInput min={40} max={300} value={gradualCap} onChange={setGradualCap}
+              <label className="block text-[11px] font-semibold text-slate-400 mb-1">Cap Limit</label>
+              <NumberInput min={40} max={300} aria-label="Ramp: maximum BPM" value={gradualCap} onChange={setGradualCap}
                 className="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500"
               />
             </div>
@@ -171,7 +180,8 @@ export function AutomationEngine({
             <div className="flex gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800">
               <button
                 onClick={() => setSprintType(SPRINT_STRATEGIES.BPM)}
-                className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all cursor-pointer ${
+                aria-pressed={sprintType === SPRINT_STRATEGIES.BPM}
+                className={`px-2 py-0.5 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
                   sprintType === SPRINT_STRATEGIES.BPM
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                     : 'text-slate-400 hover:text-slate-200'
@@ -181,7 +191,8 @@ export function AutomationEngine({
               </button>
               <button
                 onClick={() => setSprintType(SPRINT_STRATEGIES.SUBDIVISION)}
-                className={`px-2 py-0.5 text-[10px] font-bold rounded-md transition-all cursor-pointer ${
+                aria-pressed={sprintType === SPRINT_STRATEGIES.SUBDIVISION}
+                className={`px-2 py-0.5 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
                   sprintType === SPRINT_STRATEGIES.SUBDIVISION
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                     : 'text-slate-400 hover:text-slate-200'
@@ -196,17 +207,17 @@ export function AutomationEngine({
           {sprintType === SPRINT_STRATEGIES.BPM && (
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-slate-900/80 border border-slate-800/80 p-2.5 rounded-xl space-y-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">🏃 Jog Phase</span>
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">🏃 Jog Phase</span>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[9px] text-slate-500 mb-0.5">BPM</label>
-                    <NumberInput min={MIN_BPM} max={MAX_BPM} value={jogBpm} onChange={setJogBpm}
+                    <label className="block text-[11px] text-slate-400 mb-0.5">BPM</label>
+                    <NumberInput min={MIN_BPM} max={MAX_BPM} aria-label="Jog phase BPM" value={jogBpm} onChange={setJogBpm}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-slate-500 mb-0.5">Bars</label>
-                    <NumberInput min={1} max={32} value={jogBars} onChange={setJogBars}
+                    <label className="block text-[11px] text-slate-400 mb-0.5">Bars</label>
+                    <NumberInput min={1} max={32} aria-label="Jog phase bars" value={jogBars} onChange={setJogBars}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                     />
                   </div>
@@ -214,17 +225,17 @@ export function AutomationEngine({
               </div>
 
               <div className="bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl space-y-2">
-                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">🔥 Sprint Burst</span>
+                <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">🔥 Sprint Burst</span>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[9px] text-slate-500 mb-0.5">BPM</label>
-                    <NumberInput min={MIN_BPM} max={MAX_BPM} value={sprintBpm} onChange={setSprintBpm}
+                    <label className="block text-[11px] text-slate-400 mb-0.5">BPM</label>
+                    <NumberInput min={MIN_BPM} max={MAX_BPM} aria-label="Sprint phase BPM" value={sprintBpm} onChange={setSprintBpm}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-slate-500 mb-0.5">Bars</label>
-                    <NumberInput min={1} max={32} value={sprintBars} onChange={setSprintBars}
+                    <label className="block text-[11px] text-slate-400 mb-0.5">Bars</label>
+                    <NumberInput min={1} max={32} aria-label="Sprint phase bars" value={sprintBars} onChange={setSprintBars}
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                     />
                   </div>
@@ -237,11 +248,12 @@ export function AutomationEngine({
           {sprintType === SPRINT_STRATEGIES.SUBDIVISION && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold text-slate-400">Interval Metric</span>
+                <span className="text-[11px] font-semibold text-slate-400">Interval Metric</span>
                 <div className="flex gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800">
                   <button
                     onClick={() => setSubdivMetric(SUBDIV_METRICS.BARS)}
-                    className={`px-2 py-0.5 text-[9px] font-bold rounded cursor-pointer ${
+                    aria-pressed={subdivMetric === SUBDIV_METRICS.BARS}
+                    className={`px-2 py-0.5 text-[11px] font-bold rounded cursor-pointer ${
                       subdivMetric === SUBDIV_METRICS.BARS ? 'bg-amber-500/30 text-amber-200' : 'text-slate-400'
                     }`}
                   >
@@ -249,7 +261,8 @@ export function AutomationEngine({
                   </button>
                   <button
                     onClick={() => setSubdivMetric(SUBDIV_METRICS.BEATS)}
-                    className={`px-2 py-0.5 text-[9px] font-bold rounded cursor-pointer ${
+                    aria-pressed={subdivMetric === SUBDIV_METRICS.BEATS}
+                    className={`px-2 py-0.5 text-[11px] font-bold rounded cursor-pointer ${
                       subdivMetric === SUBDIV_METRICS.BEATS ? 'bg-amber-500/30 text-amber-200' : 'text-slate-400'
                     }`}
                   >
@@ -258,30 +271,31 @@ export function AutomationEngine({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <div className="bg-slate-900/80 border border-slate-800/80 p-2.5 rounded-xl space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">🏃 Rest Subdiv</span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">🏃 Rest Subdiv</span>
+                  <div className="grid grid-cols-[3fr_2fr] gap-2">
                     <div>
-                      <label className="block text-[9px] text-slate-500 mb-0.5">Rate</label>
+                      <label className="block text-[11px] text-slate-400 mb-0.5">Rate</label>
                       {/* REST SUBDIV DROPDOWN */}
-                      <select
+                      <Select
+                        aria-label="Rest subdivision rate"
                         value={jogSubdiv}
                         onChange={(e) => setJogSubdiv(Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200 focus:outline-none focus:border-amber-500"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-2 pr-7 py-1 text-xs font-mono font-bold text-slate-200 focus:outline-none focus:border-amber-500"
                       >
                         {SUBDIVISION_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
                             {opt.value}x ({opt.label.split(' ')[1] || opt.label})
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                     <div>
-                      <label className="block text-[9px] text-slate-500 mb-0.5">
+                      <label className="block text-[11px] text-slate-400 mb-0.5">
                         {subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats'}
                       </label>
-                      <NumberInput min={1} max={32} value={jogUnits} onChange={setJogUnits}
+                      <NumberInput min={1} max={32} aria-label="Rest subdivision duration" value={jogUnits} onChange={setJogUnits}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-slate-200"
                       />
                     </div>
@@ -289,28 +303,29 @@ export function AutomationEngine({
                 </div>
 
                 <div className="bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl space-y-2">
-                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">🔥 Burst Subdiv</span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">🔥 Burst Subdiv</span>
+                  <div className="grid grid-cols-[3fr_2fr] gap-2">
                     <div>
-                      <label className="block text-[9px] text-slate-500 mb-0.5">Rate</label>
+                      <label className="block text-[11px] text-slate-400 mb-0.5">Rate</label>
                       {/* BURST SUBDIV DROPDOWN */}
-                      <select
+                      <Select
+                        aria-label="Burst subdivision rate"
                         value={sprintSubdiv}
                         onChange={(e) => setSprintSubdiv(Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-500"
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-2 pr-7 py-1 text-xs font-mono font-bold text-amber-300 focus:outline-none focus:border-amber-500"
                       >
                         {SUBDIVISION_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
                             {opt.value}x ({opt.label.split(' ')[1] || opt.label})
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     </div>
                     <div>
-                      <label className="block text-[9px] text-slate-500 mb-0.5">
+                      <label className="block text-[11px] text-slate-400 mb-0.5">
                         {subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats'}
                       </label>
-                      <NumberInput min={1} max={32} value={sprintUnits} onChange={setSprintUnits}
+                      <NumberInput min={1} max={32} aria-label="Burst subdivision duration" value={sprintUnits} onChange={setSprintUnits}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-xs font-mono font-bold text-amber-300"
                       />
                     </div>
@@ -331,14 +346,14 @@ export function AutomationEngine({
           </span>
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-900/80 border border-slate-800/80 p-2.5 rounded-xl space-y-1">
-              <label className="block text-[10px] font-semibold text-slate-400">🔊 Play Bars</label>
-              <NumberInput min={1} max={32} value={muteBarsPlay} onChange={setMuteBarsPlay}
+              <label className="block text-[11px] font-semibold text-slate-400">🔊 Play Bars</label>
+              <NumberInput min={1} max={32} aria-label="Mute trainer: bars playing" value={muteBarsPlay} onChange={setMuteBarsPlay}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-slate-100"
               />
             </div>
             <div className="bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-xl space-y-1">
-              <label className="block text-[10px] font-semibold text-rose-300">🔇 Silent Bars</label>
-              <NumberInput min={1} max={32} value={muteBarsSilent} onChange={setMuteBarsSilent}
+              <label className="block text-[11px] font-semibold text-rose-300">🔇 Silent Bars</label>
+              <NumberInput min={1} max={32} aria-label="Mute trainer: silent bars" value={muteBarsSilent} onChange={setMuteBarsSilent}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-rose-300"
               />
             </div>
@@ -351,10 +366,14 @@ export function AutomationEngine({
         <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800/60 text-center space-y-2">
           <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-purple-300">
             <Music2 className="w-4 h-4 text-purple-400" />
-            Multi-Section Song Map Active
+            {hasSections ? 'Multi-Section Song Map Active' : 'No Song Map Loaded'}
           </div>
           <p className="text-[11px] text-slate-400">
-            Tempo and subdivisions are synchronized with the selected song map from your library.
+            {hasSections
+              ? `Tempo and subdivisions follow the sections of "${activeSongMap.title}".`
+              : activeSongMap
+              ? `"${activeSongMap.title}" has no sections, so it plays at a fixed tempo.`
+              : 'Pick a song from the library below to load its sections.'}
           </p>
         </div>
       )}

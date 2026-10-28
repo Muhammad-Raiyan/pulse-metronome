@@ -10,6 +10,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        // Include songs.json so the song library works offline
+        globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest}']
+      },
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Pulse Metronome',

@@ -7,6 +7,8 @@ export class AudioEngine {
     this.nextNoteTime = 0.0;
     this.currentBeatInBar = 0;
     this.currentSubIndex = 0;
+    this.pendingTimeouts = new Set();
+    this.activeGains = new Set();
   }
 
   init() {
@@ -24,6 +26,14 @@ export class AudioEngine {
     this.currentBeatInBar = 0;
     this.currentSubIndex = 0;
     this.nextNoteTime = this.audioCtx.currentTime + 0.05;
+  }
+
+  // Cancel pending visual updates and silence notes that are already scheduled
+  stop() {
+    this.pendingTimeouts.forEach((id) => clearTimeout(id));
+    this.pendingTimeouts.clear();
+    this.activeGains.forEach((gain) => gain.disconnect());
+    this.activeGains.clear();
   }
 
   processTick(state, onVisualUpdate, onStateAdvance) {
@@ -61,11 +71,13 @@ export class AudioEngine {
 
     const delayMs = Math.max(0, (time - this.audioCtx.currentTime) * 1000);
 
-    setTimeout(() => {
+    const id = setTimeout(() => {
+      this.pendingTimeouts.delete(id);
       if (onVisualUpdate) {
         onVisualUpdate(beatNum, subNum);
       }
     }, delayMs);
+    this.pendingTimeouts.add(id);
 
     this.playTone(time, isMainBeat, beatNum, state);
   }
@@ -80,9 +92,11 @@ export class AudioEngine {
     // 0. MUTE TRAINER SILENT BAR CHECK
     if (state.isMutePhase) return;
 
-    // Read per-beat accent profile
-    const beatAccent = (state.beatAccents && state.beatAccents[beatNum] !== undefined)
-      ? state.beatAccents[beatNum]
+    // Read per-beat accent profile; unknown values fall back to the default so
+    // a bad entry can never leave freq/volume undefined and throw in the scheduler
+    const requested = state.beatAccents ? state.beatAccents[beatNum] : undefined;
+    const beatAccent = Object.values(ACCENT_TYPES).includes(requested)
+      ? requested
       : (beatNum === 0 ? ACCENT_TYPES.ACCENT : ACCENT_TYPES.NORMAL);
 
     // If beat tile is explicitly muted, skip tone
@@ -137,6 +151,13 @@ export class AudioEngine {
     gain.gain.setValueAtTime(0, time);
     gain.gain.linearRampToValueAtTime(volume, time + 0.002);
     gain.gain.exponentialRampToValueAtTime(0.0001, time + (state.isDelayPhase ? 0.035 : 0.05));
+
+    this.activeGains.add(gain);
+    osc.onended = () => {
+      this.activeGains.delete(gain);
+      osc.disconnect();
+      gain.disconnect();
+    };
 
     osc.start(time);
     osc.stop(time + 0.05);

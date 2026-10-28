@@ -1,12 +1,19 @@
 {
   "name": "pulse-metronome",
   "private": true,
+  "license": "MIT",
+  "author": "Muhammad Raiyan",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Muhammad-Raiyan/pulse-metronome.git"
+  },
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
+    "test": "node --test \"src/**/*.test.js\"",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"

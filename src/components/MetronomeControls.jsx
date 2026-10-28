@@ -1,6 +1,7 @@
 // src/components/MetronomeControls.jsx
 
 import { SUBDIVISION_OPTIONS } from '../constants';
+import { Select } from './Select';
 import { Play, Square, Timer, Sliders } from 'lucide-react';
 
 export function MetronomeControls({
@@ -11,7 +12,8 @@ export function MetronomeControls({
   subdivision,
   setSubdivision,
   startDelayBars,
-  setStartDelayBars
+  setStartDelayBars,
+  subdivisionLocked
 }) {
   const beatsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12];
   const delayOptions = [0, 1, 2, 4];
@@ -42,15 +44,15 @@ export function MetronomeControls({
 
       {/* Beats Per Bar (Time Signature Numerator) */}
       <div className="space-y-2">
-        <label className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+        <span id="beats-label" className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
           <Sliders className="w-3.5 h-3.5 text-cyan-400" />
-          Beats Per Measure (Time Signature)
-        </label>
-        <div className="grid grid-cols-5 gap-1.5">
+          Beats Per Measure (Time Signature)</span>
+        <div role="group" aria-labelledby="beats-label" className="grid grid-cols-5 gap-1.5">
           {beatsOptions.map((num) => (
             <button
               key={num}
               onClick={() => setBeatsPerBar(num)}
+              aria-pressed={beatsPerBar === num}
               className={`py-2 text-xs font-mono font-bold rounded-xl border transition-all cursor-pointer ${
                 beatsPerBar === num
                   ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300 shadow-md shadow-cyan-500/10'
@@ -65,34 +67,41 @@ export function MetronomeControls({
 
       {/* Subdivision Rate (Converted to Dropdown Select) */}
       <div className="space-y-2">
-        <label className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+        <label htmlFor="subdivision-select" className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
           <Sliders className="w-3.5 h-3.5 text-cyan-400" />
           Subdivision Rate
         </label>
-        <select
+        <Select
+          id="subdivision-select"
           value={subdivision}
+          disabled={subdivisionLocked}
           onChange={(e) => setSubdivision(Number(e.target.value))}
-          className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-200 focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
+          className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-3.5 pr-10 py-2.5 text-xs font-mono font-bold text-slate-200 focus:outline-none focus:border-cyan-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {SUBDIVISION_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.value}x — {opt.label.replace(/^\d+x\s*/, '')}
             </option>
           ))}
-        </select>
+        </Select>
+        {subdivisionLocked && (
+          <p className="text-[11px] text-amber-300/80">
+            Controlled by the Sprint trainer (Subdivision Burst).
+          </p>
+        )}
       </div>
 
       {/* Pre-Roll Count-In Delay */}
       <div className="space-y-2 pt-1 border-t border-slate-800/80">
-        <label className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+        <span id="countin-label" className="block text-xs font-semibold text-slate-400 flex items-center gap-1.5">
           <Timer className="w-3.5 h-3.5 text-purple-400" />
-          Pre-Roll Count-In Delay
-        </label>
-        <div className="grid grid-cols-4 gap-1.5">
+          Pre-Roll Count-In Delay</span>
+        <div role="group" aria-labelledby="countin-label" className="grid grid-cols-4 gap-1.5">
           {delayOptions.map((bars) => (
             <button
               key={bars}
               onClick={() => setStartDelayBars(bars)}
+              aria-pressed={startDelayBars === bars}
               className={`py-2 text-xs font-mono font-bold rounded-xl border transition-all cursor-pointer ${
                 startDelayBars === bars
                   ? 'bg-purple-500/20 border-purple-500 text-purple-300 shadow-md shadow-purple-500/10'

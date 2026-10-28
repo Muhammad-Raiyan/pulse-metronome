@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AudioEngine } from '../audio/AudioEngine';
+import { advanceAutomation } from '../audio/automation';
 import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
@@ -29,6 +30,8 @@ export function Metronome() {
   const handleBeatsPerBarChange = useCallback((newBeats) => {
     setBeatsPerBar(newBeats);
     setBeatAccents((prev) => {
+      // Same meter: keep the user's accent pattern untouched
+      if (prev.length === newBeats) return prev;
       const updated = [...prev];
       updated[0] = ACCENT_TYPES.ACCENT;
       while (updated.length < newBeats) {
@@ -90,6 +93,7 @@ export function Metronome() {
   const audioEngineRef = useRef(null);
   const workerRef = useRef(null);
   const tapTimesRef = useRef([]);
+  const rampStartBpmRef = useRef(null);
 
   const isSpeedCapReached = automationMode === AUTOMATION_MODES.RAMP && bpm >= gradualCap;
 
@@ -134,125 +138,66 @@ export function Metronome() {
     };
   });
 
-  // Handle Bar/Beat Progressions for Automation & Mute Trainer & Song Maps
+  // Handle Bar/Beat progressions. The rules live in advanceAutomation(), which updates the
+  // live snapshot synchronously (so the next note sees the change) and returns what changed
+  // so it can be mirrored into React state for display.
   const handleStateAdvance = (type) => {
-    const s = stateRef.current;
+    const patch = advanceAutomation(stateRef.current, type);
 
-    if (s.isDelayPhase && type === 'bar') {
-      setDelayBarsElapsed((prev) => {
-        const next = prev + 1;
-        if (next >= s.startDelayBars) {
-          setIsDelayPhase(false);
-          return 0;
-        }
-        return next;
-      });
-      return;
-    }
-
-    if (s.automationMode === AUTOMATION_MODES.RAMP && type === 'bar') {
-      setUnitsElapsed((prev) => {
-        const next = prev + 1;
-        if (next >= s.gradualInterval) {
-          if (s.bpm < s.gradualCap) {
-            setBpm((b) => Math.min(s.gradualCap, b + s.gradualStep));
-          }
-          return 0;
-        }
-        return next;
-      });
-    } 
-    else if (s.automationMode === AUTOMATION_MODES.JOG_SPRINT) {
-      const isBarTrigger = (s.sprintType === SPRINT_STRATEGIES.BPM || (s.sprintType === SPRINT_STRATEGIES.SUBDIVISION && s.subdivMetric === SUBDIV_METRICS.BARS)) && type === 'bar';
-      const isBeatTrigger = (s.sprintType === SPRINT_STRATEGIES.SUBDIVISION && s.subdivMetric === SUBDIV_METRICS.BEATS) && (type === 'beat' || type === 'bar');
-
-      if (isBarTrigger || isBeatTrigger) {
-        setUnitsElapsed((prev) => {
-          const targetLimit = s.isSprintPhase
-            ? (s.sprintType === SPRINT_STRATEGIES.BPM ? s.sprintBars : s.sprintUnits)
-            : (s.sprintType === SPRINT_STRATEGIES.BPM ? s.jogBars : s.jogUnits);
-
-          const next = prev + 1;
-          if (next >= targetLimit) {
-            const nextSprintState = !s.isSprintPhase;
-            setIsSprintPhase(nextSprintState);
-            if (s.sprintType === SPRINT_STRATEGIES.BPM) {
-              setBpm(nextSprintState ? s.sprintBpm : s.jogBpm);
-            }
-            return 0;
-          }
-          return next;
-        });
-      }
-    }
-    else if (s.automationMode === AUTOMATION_MODES.MUTE_TRAINER && type === 'bar') {
-      setUnitsElapsed((prev) => {
-        const targetLimit = s.isMutePhase ? s.muteBarsSilent : s.muteBarsPlay;
-        const next = prev + 1;
-        if (next >= targetLimit) {
-          setIsMutePhase(!s.isMutePhase);
-          return 0;
-        }
-        return next;
-      });
-    }
-    else if (s.automationMode === AUTOMATION_MODES.SONG_MAP && s.activeSongMap && type === 'bar') {
-      const currentSection = s.activeSongMap.sections?.[s.currentSectionIndex];
-
-      if (currentSection) {
-        setUnitsElapsed((prevBars) => {
-          const nextBars = prevBars + 1;
-
-          if (nextBars >= currentSection.bars) {
-            const nextIndex = s.currentSectionIndex + 1;
-
-            if (nextIndex < s.activeSongMap.sections.length) {
-              setCurrentSectionIndex(nextIndex);
-              applySection(s.activeSongMap.sections[nextIndex]);
-            } else {
-              setCurrentSectionIndex(0);
-              applySection(s.activeSongMap.sections[0]);
-            }
-            return 0;
-          }
-          return nextBars;
-        });
-      }
-    }
+    if ('isDelayPhase' in patch) setIsDelayPhase(patch.isDelayPhase);
+    if ('delayBarsElapsed' in patch) setDelayBarsElapsed(patch.delayBarsElapsed);
+    if ('unitsElapsed' in patch) setUnitsElapsed(patch.unitsElapsed);
+    if ('bpm' in patch) setBpm(patch.bpm);
+    if ('isSprintPhase' in patch) setIsSprintPhase(patch.isSprintPhase);
+    if ('isMutePhase' in patch) setIsMutePhase(patch.isMutePhase);
+    if ('currentSectionIndex' in patch) setCurrentSectionIndex(patch.currentSectionIndex);
+    if (patch.section) applySection(patch.section);
   };
-
   const advanceHandlerRef = useRef(handleStateAdvance);
   useEffect(() => {
     advanceHandlerRef.current = handleStateAdvance;
   });
 
-  // Screen Wake Lock Handler
+  // Screen Wake Lock: held while playing, re-acquired when the tab becomes visible again
   useEffect(() => {
-    let wakeLock = null;
+    if (!isPlaying || !('wakeLock' in navigator)) return;
 
-    const requestWakeLock = async () => {
-      if ('wakeLock' in navigator && isPlaying) {
-        try {
-          wakeLock = await navigator.wakeLock.request('screen');
-        } catch (err) {
-          console.log('Wake Lock request failed:', err);
+    let cancelled = false;
+    let pending = false;
+    let lock = null;
+
+    const request = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const granted = await navigator.wakeLock.request('screen');
+        if (cancelled) {
+          granted.release();
+        } else {
+          lock = granted;
         }
+      } catch (err) {
+        console.warn('Wake Lock request failed:', err.name);
+      } finally {
+        pending = false;
       }
     };
 
-    if (isPlaying) {
-      requestWakeLock();
-    } else if (wakeLock) {
-      wakeLock.release().then(() => {
-        wakeLock = null;
-      });
-    }
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && (!lock || lock.released)) {
+        request();
+      }
+    };
+
+    request();
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
-      if (wakeLock) wakeLock.release();
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (lock) lock.release();
     };
   }, [isPlaying]);
-
   // Web Worker & Audio Engine Lifecycle
   useEffect(() => {
     audioEngineRef.current = new AudioEngine();
@@ -284,18 +229,35 @@ export function Metronome() {
     };
   }, []);
 
+  // Stop playback. `restoreTempo` puts the tempo back to where the automation started;
+  // it is skipped when a new song is being loaded, which sets its own tempo.
+  const stopPlayback = useCallback((restoreTempo) => {
+    workerRef.current.postMessage({ command: 'stop' });
+    audioEngineRef.current?.stop();
+    if (restoreTempo) {
+      if (rampStartBpmRef.current !== null && automationMode === AUTOMATION_MODES.RAMP) {
+        setBpm(rampStartBpmRef.current);
+      } else if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
+        setBpm(clampBpm(jogBpm));
+      } else if (automationMode === AUTOMATION_MODES.SONG_MAP) {
+        applySection(activeSongMap?.sections?.[0]);
+      }
+    }
+    rampStartBpmRef.current = null;
+    setIsPlaying(false);
+    setIsSprintPhase(false);
+    setIsDelayPhase(false);
+    setIsMutePhase(false);
+    setUnitsElapsed(0);
+    setDelayBarsElapsed(0);
+    setCurrentSectionIndex(0);
+    setActiveBeat({ beat: 0, sub: 0 });
+  }, [automationMode, sprintType, jogBpm, activeSongMap, applySection]);
+
   // Wrapped in useCallback so keydown listener dependency remains stable
   const togglePlay = useCallback(() => {
     if (isPlaying) {
-      workerRef.current.postMessage({ command: 'stop' });
-      setIsPlaying(false);
-      setIsSprintPhase(false);
-      setIsDelayPhase(false);
-      setIsMutePhase(false);
-      setUnitsElapsed(0);
-      setDelayBarsElapsed(0);
-      setCurrentSectionIndex(0);
-      setActiveBeat({ beat: 0, sub: 0 });
+      stopPlayback(true);
     } else {
       if (!audioEngineRef.current) {
         audioEngineRef.current = new AudioEngine();
@@ -320,6 +282,9 @@ export function Metronome() {
         setIsDelayPhase(true);
       }
 
+      // Remember where a ramp starts so the next run begins from the same tempo
+      rampStartBpmRef.current = automationMode === AUTOMATION_MODES.RAMP ? stateRef.current.bpm : null;
+
       if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
         setBpm(clampBpm(jogBpm));
       } else if (automationMode === AUTOMATION_MODES.SONG_MAP) {
@@ -330,7 +295,7 @@ export function Metronome() {
       workerRef.current.postMessage({ command: 'start' });
       setIsPlaying(true);
     }
-  }, [isPlaying, startDelayBars, automationMode, sprintType, jogBpm, activeSongMap, applySection]);
+  }, [isPlaying, stopPlayback, startDelayBars, automationMode, sprintType, jogBpm, activeSongMap, applySection]);
 
   // Switching mode must not carry phase state (silent bar, sprint bell, counters) over
   const handleModeChange = (mode) => {
@@ -343,6 +308,9 @@ export function Metronome() {
 
   const handleTapTempo = useCallback(() => {
     const now = performance.now();
+    const taps = tapTimesRef.current;
+    // A long pause starts a fresh tap sequence
+    if (taps.length > 0 && now - taps[taps.length - 1] > 2000) taps.length = 0;
     tapTimesRef.current.push(now);
     if (tapTimesRef.current.length > 4) tapTimesRef.current.shift();
 
@@ -356,17 +324,25 @@ export function Metronome() {
     }
   }, []);
 
-  // Fixed warning #3: Added togglePlay and handleTapTempo to effect dependency array
+  // Keyboard shortcuts. Typing fields and dropdowns keep their own keys; the tempo slider
+  // keeps the arrow keys but still lets Space start/stop.
   useEffect(() => {
+    const isTypingTarget = (el) => {
+      const tag = el?.tagName?.toLowerCase();
+      if (tag === 'select' || tag === 'textarea') return true;
+      return tag === 'input' && el.type !== 'range';
+    };
+
     const handleKeyDown = (e) => {
-      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-      if (activeTag === 'input' || activeTag === 'select' || activeTag === 'textarea') {
-        return;
-      }
+      if (e.ctrlKey || e.metaKey) return;
+      const el = document.activeElement;
+      if (isTypingTarget(el)) return;
+      const onSlider = el?.tagName?.toLowerCase() === 'input' && el.type === 'range';
+      if (onSlider && e.code !== 'Space') return;
 
       if (e.code === 'Space') {
         e.preventDefault();
-        togglePlay();
+        if (!e.repeat) togglePlay();
       } else if (e.code === 'ArrowUp') {
         e.preventDefault();
         const delta = e.altKey ? 8 : e.shiftKey ? 4 : 1;
@@ -377,12 +353,21 @@ export function Metronome() {
         setBpm((b) => Math.max(MIN_BPM, b - delta));
       } else if (e.code === 'KeyT') {
         e.preventDefault();
-        handleTapTempo();
+        if (!e.repeat) handleTapTempo();
       }
     };
 
+    // A focused button also "clicks" on Space key-up, which would toggle a second time
+    const handleKeyUp = (e) => {
+      if (e.code === 'Space' && !isTypingTarget(document.activeElement)) e.preventDefault();
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
   }, [togglePlay, handleTapTempo]);
 
   const handleSelectSong = (song) => {
@@ -403,17 +388,20 @@ export function Metronome() {
     }
 
     if (song.beatAccents && Array.isArray(song.beatAccents)) {
-      setBeatAccents(song.beatAccents);
+      const validAccents = Object.values(ACCENT_TYPES);
+      setBeatAccents(
+        song.beatAccents.map((a) => (validAccents.includes(a) ? a : ACCENT_TYPES.NORMAL))
+      );
     }
 
     if (isPlaying) {
-      togglePlay();
+      stopPlayback(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 md:p-6 font-sans">
-      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div className="min-h-dvh bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 md:p-6 font-sans">
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* LEFT COLUMN */}
         <div className="lg:col-span-7 space-y-6">
@@ -463,6 +451,7 @@ export function Metronome() {
             setSubdivision={setSubdivision}
             startDelayBars={startDelayBars}
             setStartDelayBars={setStartDelayBars}
+            subdivisionLocked={automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.SUBDIVISION}
           />
         </div>
 
@@ -501,6 +490,7 @@ export function Metronome() {
             setMuteBarsPlay={setMuteBarsPlay}
             muteBarsSilent={muteBarsSilent}
             setMuteBarsSilent={setMuteBarsSilent}
+            activeSongMap={activeSongMap}
           />
 
           <SongMapLoader onSelectSong={handleSelectSong} />

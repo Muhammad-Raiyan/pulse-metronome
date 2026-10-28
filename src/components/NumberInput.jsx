@@ -4,7 +4,7 @@ const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 
 // Numeric input that only commits in-range values while typing and
 // clamps (or reverts) on blur, so an empty/invalid field can never reach state.
-export function NumberInput({ value, onChange, min, max, className }) {
+export function NumberInput({ value, onChange, min, max, className, ...rest }) {
   const [draft, setDraft] = useState(null);
 
   const handleChange = (e) => {
@@ -34,6 +34,7 @@ export function NumberInput({ value, onChange, min, max, className }) {
       onChange={handleChange}
       onBlur={handleBlur}
       className={className}
+      {...rest}
     />
   );
 }
