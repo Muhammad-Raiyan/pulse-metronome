@@ -71,6 +71,17 @@ export class AudioEngine {
   playTone(time, isMainBeat, beatNum, state) {
     if (!this.audioCtx) return;
 
+    // 0. MUTE TRAINER SILENT BAR CHECK
+    if (state.isMutePhase) return;
+
+    // Read per-beat accent profile
+    const beatAccent = (state.beatAccents && state.beatAccents[beatNum] !== undefined)
+      ? state.beatAccents[beatNum]
+      : (beatNum === 0 ? 0 : 1);
+
+    // If beat tile is explicitly muted, skip tone
+    if (beatAccent === 3 && isMainBeat) return;
+
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
 
@@ -81,24 +92,42 @@ export class AudioEngine {
     let volume;
     let waveType = 'triangle';
 
-    // 1. DISTINCT COUNT-IN / PRE-ROLL SOUND
+    // 1. COUNT-IN / PRE-ROLL DISTINCT SOUND
     if (state.isDelayPhase) {
       waveType = 'sine';
-      // Crisp, high-pitched tick (2000Hz on beat 1, 1500Hz on other beats)
       freq = (isMainBeat && beatNum === 0) ? 2000 : 1500;
       volume = (isMainBeat ? 0.85 : 0.45) * (state.volume || 0.8);
     } 
-    // 2. REGULAR METRONOME CLICK
+    // 2. SPRINT PHASE OR SPEED CAP PEAK ALERT SOUND
+    else if ((state.isSprintPhase || state.isSpeedCapReached) && isMainBeat && beatNum === 0) {
+      waveType = 'sine';
+      freq = 2400; // High Alert Bell
+      volume = 1.0 * (state.volume || 0.8);
+    }
+    // 3. REGULAR METRONOME CLICK WITH PER-BEAT ACCENTS
     else {
-      let isAccented = isMainBeat && beatNum === 0;
-      freq = isMainBeat ? (isAccented ? 1200 : 850) : 600;
-      volume = (isAccented ? 1.0 : (isMainBeat ? 0.7 : 0.3)) * (state.volume || 0.8);
+      if (isMainBeat) {
+        if (beatAccent === 0) { // Accented
+          freq = 1200;
+          volume = 1.0;
+        } else if (beatAccent === 1) { // Normal
+          freq = 850;
+          volume = 0.7;
+        } else if (beatAccent === 2) { // Soft
+          freq = 650;
+          volume = 0.35;
+        }
+      } else {
+        // Sub-ticks
+        freq = 600;
+        volume = 0.3;
+      }
+      volume *= (state.volume || 0.8);
     }
 
     osc.type = waveType;
     osc.frequency.setValueAtTime(freq, time);
 
-    // Envelope shaping
     gain.gain.setValueAtTime(0, time);
     gain.gain.linearRampToValueAtTime(volume, time + 0.002);
     gain.gain.exponentialRampToValueAtTime(0.0001, time + (state.isDelayPhase ? 0.035 : 0.05));

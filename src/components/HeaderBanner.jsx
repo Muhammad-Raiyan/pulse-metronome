@@ -1,4 +1,6 @@
 import React from 'react';
+import { AUTOMATION_MODES, SPRINT_STRATEGIES } from '../constants';
+import { AlertCircle, Flame, Timer, VolumeX, Volume2 } from 'lucide-react';
 
 export function HeaderBanner({
   isPlaying,
@@ -14,37 +16,62 @@ export function HeaderBanner({
   sprintBars,
   sprintUnits,
   jogBars,
-  jogUnits
+  jogUnits,
+  isSpeedCapReached,
+  isMutePhase,
+  muteBarsPlay,
+  muteBarsSilent
 }) {
   return (
-    <div className={`w-full flex items-center justify-between px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider mb-2 border ${
+    <div className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider mb-2 border transition-all duration-300 ${
       isDelayPhase
         ? 'bg-purple-500/20 border-purple-500/40 text-purple-300'
+        : isMutePhase
+        ? 'bg-rose-500/20 border-rose-500/40 text-rose-300 shadow-lg shadow-rose-500/10'
+        : isSpeedCapReached
+        ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 shadow-lg shadow-rose-500/20'
         : isSprintPhase 
-        ? 'bg-amber-500/20 border-amber-500/40 text-amber-300' 
+        ? 'bg-amber-500/25 border-amber-500/50 text-amber-300 shadow-lg shadow-amber-500/20' 
         : 'bg-slate-800/80 border-slate-700/60 text-slate-300'
     }`}>
       <span className="flex items-center gap-2">
         <span className={`w-2.5 h-2.5 rounded-full ${
           isPlaying 
-            ? (isDelayPhase ? 'bg-purple-400 animate-ping' : isSprintPhase ? 'bg-amber-400 animate-ping' : 'bg-cyan-400 animate-pulse') 
+            ? (isDelayPhase ? 'bg-purple-400 animate-ping' : isMutePhase ? 'bg-rose-500 animate-pulse' : isSpeedCapReached ? 'bg-rose-400 animate-ping' : isSprintPhase ? 'bg-amber-400 animate-ping' : 'bg-cyan-400 animate-pulse') 
             : 'bg-slate-500'
         }`} />
-        <span>
-          {isDelayPhase && `⏳ COUNT-IN DELAY (${startDelayBars} BARS)`}
-          {!isDelayPhase && automationMode === 'manual' && 'Manual Mode'}
-          {!isDelayPhase && automationMode === 'gradual' && `Ramp Up (+${gradualStep} BPM)`}
-          {!isDelayPhase && automationMode === 'jogsprint' && (isSprintPhase ? '🔥 SPRINT PHASE' : '🏃 JOG PHASE')}
+        <span className="flex items-center gap-1.5">
+          {isDelayPhase && <><Timer className="w-3.5 h-3.5" /> COUNT-IN DELAY ({startDelayBars} BARS)</>}
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.MANUAL && 'Manual Mode'}
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.RAMP && (
+            isSpeedCapReached 
+              ? <><AlertCircle className="w-3.5 h-3.5 text-rose-400" /> MAX SPEED CAP REACHED</>
+              : `Ramp Up (+${gradualStep} BPM)`
+          )}
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.JOG_SPRINT && (
+            isSprintPhase 
+              ? <><Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" /> 🔥 SPRINT PHASE ALERT</> 
+              : '🏃 JOG PHASE'
+          )}
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.MUTE_TRAINER && (
+            isMutePhase 
+              ? <><VolumeX className="w-3.5 h-3.5 text-rose-400 animate-pulse" /> 🔇 MUTE TRAINER (SILENT)</>
+              : <><Volume2 className="w-3.5 h-3.5 text-cyan-400" /> 🔊 MUTE TRAINER (PLAYING)</>
+          )}
         </span>
       </span>
+
       <span className="font-mono text-cyan-400">
         {isDelayPhase && `Bar ${delayBarsElapsed + 1}/${startDelayBars}`}
-        {!isDelayPhase && automationMode === 'manual' && (isPlaying ? 'Active' : 'Ready')}
-        {!isDelayPhase && automationMode === 'gradual' && `Step ${unitsElapsed + 1}/${gradualInterval}`}
-        {!isDelayPhase && automationMode === 'jogsprint' && `Unit ${unitsElapsed + 1}/${
+        {!isDelayPhase && automationMode === AUTOMATION_MODES.MANUAL && (isPlaying ? 'Active' : 'Ready')}
+        {!isDelayPhase && automationMode === AUTOMATION_MODES.RAMP && `Step ${unitsElapsed + 1}/${gradualInterval}`}
+        {!isDelayPhase && automationMode === AUTOMATION_MODES.JOG_SPRINT && `Unit ${unitsElapsed + 1}/${
           isSprintPhase 
-            ? (sprintType === 'bpm' ? sprintBars : sprintUnits) 
-            : (sprintType === 'bpm' ? jogBars : jogUnits)
+            ? (sprintType === SPRINT_STRATEGIES.BPM ? sprintBars : sprintUnits) 
+            : (sprintType === SPRINT_STRATEGIES.BPM ? jogBars : jogUnits)
+        }`}
+        {!isDelayPhase && automationMode === AUTOMATION_MODES.MUTE_TRAINER && `Bar ${unitsElapsed + 1}/${
+          isMutePhase ? muteBarsSilent : muteBarsPlay
         }`}
       </span>
     </div>

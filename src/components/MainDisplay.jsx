@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Minus, Hand } from 'lucide-react';
+import { Plus, Minus, Hand, VolumeX } from 'lucide-react';
 
 export function MainDisplay({
   bpm,
@@ -8,7 +8,9 @@ export function MainDisplay({
   activeSubdiv,
   isPlaying,
   activeBeat,
-  handleTapTempo
+  handleTapTempo,
+  beatAccents,
+  toggleBeatAccent
 }) {
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 relative overflow-hidden flex flex-col items-center justify-between min-h-[340px] shadow-2xl">
@@ -20,22 +22,38 @@ export function MainDisplay({
         </div>
       </div>
 
-      {/* Main Beat Tile Grid */}
+      {/* Main Beat Tile Grid with Clickable Accents */}
       <div className="w-full space-y-3">
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {Array.from({ length: beatsPerBar }).map((_, i) => {
             const isActive = isPlaying && activeBeat.beat === i;
+            const accentType = beatAccents[i] !== undefined ? beatAccents[i] : (i === 0 ? 0 : 1);
+
+            let accentStyles = 'bg-slate-950 border-slate-800 text-slate-400';
+            if (accentType === 0) { // Accented
+              accentStyles = 'border-2 border-cyan-400 text-cyan-300 font-black shadow-md shadow-cyan-500/20';
+            } else if (accentType === 1) { // Normal
+              accentStyles = 'bg-slate-950 border border-slate-800 text-slate-300';
+            } else if (accentType === 2) { // Soft
+              accentStyles = 'bg-slate-950/50 border border-slate-800/60 text-slate-500 scale-95';
+            } else if (accentType === 3) { // Muted
+              accentStyles = 'bg-slate-950/30 border border-rose-900/40 text-rose-500/50 scale-90';
+            }
+
+            if (isActive && accentType !== 3) {
+              accentStyles = 'bg-cyan-500 text-slate-950 scale-110 shadow-lg shadow-cyan-500/50 font-black';
+            }
+
             return (
-              <div
+              <button
                 key={i}
-                className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-mono font-bold transition-all duration-75 ${
-                  isActive
-                    ? 'bg-cyan-500 text-slate-950 scale-110 shadow-lg shadow-cyan-500/50'
-                    : 'bg-slate-950 border border-slate-800 text-slate-400'
-                }`}
+                onClick={() => toggleBeatAccent(i)}
+                title="Click to cycle: Accented -> Normal -> Soft -> Muted"
+                className={`w-11 h-11 md:w-13 md:h-13 rounded-xl flex flex-col items-center justify-center font-mono transition-all duration-75 cursor-pointer relative ${accentStyles}`}
               >
-                {i + 1}
-              </div>
+                <span>{i + 1}</span>
+                {accentType === 3 && <VolumeX className="w-3 h-3 text-rose-500 absolute bottom-1" />}
+              </button>
             );
           })}
         </div>
