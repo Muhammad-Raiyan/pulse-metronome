@@ -17,7 +17,7 @@ export class AudioEngine {
     }
   }
 
-  start(bpm) {
+  start(_bpm) {
     this.init();
     this.currentBeatInBar = 0;
     this.currentSubIndex = 0;

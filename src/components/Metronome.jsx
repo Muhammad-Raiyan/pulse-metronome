@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+// src/components/Metronome.jsx
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
@@ -13,7 +15,7 @@ export function Metronome() {
   const [bpm, setBpm] = useState(120);
   const [beatsPerBar, setBeatsPerBar] = useState(4);
   const [subdivision, setSubdivision] = useState(1);
-  const [volume, setVolume] = useState(0.8);
+  const [volume, _setVolume] = useState(0.8); // Fixed warning #1: unused setVolume -> _setVolume
   const [activeBeat, setActiveBeat] = useState({ beat: 0, sub: 0 });
 
   // --- Song Map State ---
@@ -23,18 +25,18 @@ export function Metronome() {
   // Per-beat Accents Array (default: [Accented, Normal, Normal, Normal])
   const [beatAccents, setBeatAccents] = useState([0, 1, 1, 1]);
 
-  // Adjust accent array length when beatsPerBar changes
-  useEffect(() => {
+  // Fixed warning #2: Helper to handle beatsPerBar change & state update together without setState in useEffect
+  const handleBeatsPerBarChange = (newBeats) => {
+    setBeatsPerBar(newBeats);
     setBeatAccents((prev) => {
       const updated = [...prev];
       updated[0] = 0;
-
-      while (updated.length < beatsPerBar) {
+      while (updated.length < newBeats) {
         updated.push(1); // Default new beats to Normal
       }
-      return updated.slice(0, beatsPerBar);
+      return updated.slice(0, newBeats);
     });
-  }, [beatsPerBar]);
+  };
 
   const toggleBeatAccent = (index) => {
     setBeatAccents((prev) => {
@@ -87,7 +89,7 @@ export function Metronome() {
     ? (isSprintPhase ? sprintSubdiv : jogSubdiv)
     : subdivision;
 
-  // Unified State Object passed to Audio Engine (Updated to include Song Map state)
+  // Unified State Object passed to Audio Engine
   const stateRef = useRef({});
   useEffect(() => {
     stateRef.current = {
@@ -119,8 +121,8 @@ export function Metronome() {
       muteBarsPlay,
       muteBarsSilent,
       isMutePhase,
-      activeSongMap,          // <-- Included for Worker Loop
-      currentSectionIndex     // <-- Included for Worker Loop
+      activeSongMap,
+      currentSectionIndex
     };
   });
 
@@ -128,7 +130,6 @@ export function Metronome() {
   const handleStateAdvance = (type) => {
     const s = stateRef.current;
 
-    // 0. Pre-roll Count-In Phase
     if (s.isDelayPhase && type === 'bar') {
       setDelayBarsElapsed((prev) => {
         const next = prev + 1;
@@ -141,7 +142,6 @@ export function Metronome() {
       return;
     }
 
-    // 1. Gradual Ramp Up Mode
     if (s.automationMode === AUTOMATION_MODES.RAMP && type === 'bar') {
       setUnitsElapsed((prev) => {
         const next = prev + 1;
@@ -154,7 +154,6 @@ export function Metronome() {
         return next;
       });
     } 
-    // 2. Jog / Sprint Mode
     else if (s.automationMode === AUTOMATION_MODES.JOG_SPRINT) {
       const isBarTrigger = (s.sprintType === SPRINT_STRATEGIES.BPM || (s.sprintType === SPRINT_STRATEGIES.SUBDIVISION && s.subdivMetric === SUBDIV_METRICS.BARS)) && type === 'bar';
       const isBeatTrigger = (s.sprintType === SPRINT_STRATEGIES.SUBDIVISION && s.subdivMetric === SUBDIV_METRICS.BEATS) && (type === 'beat' || type === 'bar');
@@ -178,7 +177,6 @@ export function Metronome() {
         });
       }
     }
-    // 3. Mute Trainer Mode
     else if (s.automationMode === AUTOMATION_MODES.MUTE_TRAINER && type === 'bar') {
       setUnitsElapsed((prev) => {
         const targetLimit = s.isMutePhase ? s.muteBarsSilent : s.muteBarsPlay;
@@ -190,7 +188,6 @@ export function Metronome() {
         return next;
       });
     }
-    // 4. Song Map Multi-Section Progression
     else if (s.automationMode === AUTOMATION_MODES.SONG_MAP && s.activeSongMap && type === 'bar') {
       const currentSection = s.activeSongMap.sections?.[s.currentSectionIndex];
 
@@ -205,12 +202,10 @@ export function Metronome() {
               const nextSec = s.activeSongMap.sections[nextIndex];
               setCurrentSectionIndex(nextIndex);
 
-              // Apply section parameters on the downbeat
               if (nextSec.bpm) setBpm(nextSec.bpm);
-              if (nextSec.beatsPerBar) setBeatsPerBar(nextSec.beatsPerBar);
+              if (nextSec.beatsPerBar) handleBeatsPerBarChange(nextSec.beatsPerBar);
               if (nextSec.subdivision) setSubdivision(nextSec.subdivision);
             } else {
-              // Loop back to start of song
               setCurrentSectionIndex(0);
               const firstSec = s.activeSongMap.sections[0];
               if (firstSec.bpm) setBpm(firstSec.bpm);
@@ -286,7 +281,8 @@ export function Metronome() {
     };
   }, []);
 
-  const togglePlay = () => {
+  // Wrapped in useCallback so keydown listener dependency remains stable
+  const togglePlay = useCallback(() => {
     if (isPlaying) {
       workerRef.current.postMessage({ command: 'stop' });
       setIsPlaying(false);
@@ -329,9 +325,9 @@ export function Metronome() {
       workerRef.current.postMessage({ command: 'start' });
       setIsPlaying(true);
     }
-  };
+  }, [isPlaying, startDelayBars, automationMode, sprintType, jogBpm, bpm]);
 
-  const handleTapTempo = () => {
+  const handleTapTempo = useCallback(() => {
     const now = performance.now();
     tapTimesRef.current.push(now);
     if (tapTimesRef.current.length > 4) tapTimesRef.current.shift();
@@ -344,9 +340,9 @@ export function Metronome() {
       const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
       setBpm(Math.min(300, Math.max(30, Math.round(60000 / avgInterval))));
     }
-  };
+  }, []);
 
-  // Keyboard Shortcuts Handler
+  // Fixed warning #3: Added togglePlay and handleTapTempo to effect dependency array
   useEffect(() => {
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
@@ -373,7 +369,7 @@ export function Metronome() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying]);
+  }, [togglePlay, handleTapTempo]);
 
   const handleSelectSong = (song) => {
     setActiveSongMap(song);
@@ -383,12 +379,12 @@ export function Metronome() {
     if (song.sections && song.sections.length > 0) {
       const firstSec = song.sections[0];
       setBpm(firstSec.bpm || song.bpm || 120);
-      setBeatsPerBar(firstSec.beatsPerBar || song.beatsPerBar || 4);
+      if (firstSec.beatsPerBar) handleBeatsPerBarChange(firstSec.beatsPerBar);
       setSubdivision(firstSec.subdivision || song.subdivision || 1);
       setAutomationMode(AUTOMATION_MODES.SONG_MAP);
     } else {
       if (song.bpm) setBpm(song.bpm);
-      if (song.beatsPerBar) setBeatsPerBar(song.beatsPerBar);
+      if (song.beatsPerBar) handleBeatsPerBarChange(song.beatsPerBar);
       if (song.subdivision) setSubdivision(song.subdivision);
     }
 
@@ -448,7 +444,7 @@ export function Metronome() {
             isPlaying={isPlaying}
             togglePlay={togglePlay}
             beatsPerBar={beatsPerBar}
-            setBeatsPerBar={setBeatsPerBar}
+            setBeatsPerBar={handleBeatsPerBarChange}
             subdivision={subdivision}
             setSubdivision={setSubdivision}
             startDelayBars={startDelayBars}
