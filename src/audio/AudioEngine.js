@@ -32,19 +32,19 @@ export class AudioEngine {
   }
 
   advanceNote(state, onStateAdvance) {
-    const activeSubdiv = state.subdivision;
+    const activeSubdiv = state.subdivision || 1;
     const secondsPerBeat = 60.0 / state.bpm;
     const secondsPerSubTick = secondsPerBeat / activeSubdiv;
 
     this.nextNoteTime += secondsPerSubTick;
 
-    state.currentSubIndex++;
-    if (state.currentSubIndex >= activeSubdiv) {
-      state.currentSubIndex = 0;
-      state.currentBeatInBar++;
+    this.currentSubIndex++;
+    if (this.currentSubIndex >= activeSubdiv) {
+      this.currentSubIndex = 0;
+      this.currentBeatInBar++;
 
-      if (state.currentBeatInBar >= state.beatsPerBar) {
-        state.currentBeatInBar = 0;
+      if (this.currentBeatInBar >= state.beatsPerBar) {
+        this.currentBeatInBar = 0;
         if (onStateAdvance) onStateAdvance('bar');
       } else {
         if (onStateAdvance) onStateAdvance('beat');
@@ -53,13 +53,16 @@ export class AudioEngine {
   }
 
   scheduleNote(time, state, onVisualUpdate) {
-    const isMainBeat = state.currentSubIndex === 0;
-    const beatNum = state.currentBeatInBar;
-    const subNum = state.currentSubIndex;
+    const beatNum = this.currentBeatInBar;
+    const subNum = this.currentSubIndex;
+    const isMainBeat = subNum === 0;
 
     const delayMs = Math.max(0, (time - this.audioCtx.currentTime) * 1000);
+
     setTimeout(() => {
-      onVisualUpdate(beatNum, subNum);
+      if (onVisualUpdate) {
+        onVisualUpdate(beatNum, subNum);
+      }
     }, delayMs);
 
     this.playTone(time, isMainBeat, beatNum, state);
@@ -74,18 +77,33 @@ export class AudioEngine {
     osc.connect(gain);
     gain.connect(this.audioCtx.destination);
 
-    let isAccented = isMainBeat && beatNum === 0;
-    let freq = isMainBeat ? (isAccented ? 1200 : 850) : 600;
-    let volume = (isAccented ? 1.0 : (isMainBeat ? 0.7 : 0.3)) * state.volume;
+    let freq;
+    let volume;
+    let waveType = 'triangle';
 
-    osc.type = 'triangle';
+    // 1. DISTINCT COUNT-IN / PRE-ROLL SOUND
+    if (state.isDelayPhase) {
+      waveType = 'sine';
+      // Crisp, high-pitched tick (2000Hz on beat 1, 1500Hz on other beats)
+      freq = (isMainBeat && beatNum === 0) ? 2000 : 1500;
+      volume = (isMainBeat ? 0.85 : 0.45) * (state.volume || 0.8);
+    } 
+    // 2. REGULAR METRONOME CLICK
+    else {
+      let isAccented = isMainBeat && beatNum === 0;
+      freq = isMainBeat ? (isAccented ? 1200 : 850) : 600;
+      volume = (isAccented ? 1.0 : (isMainBeat ? 0.7 : 0.3)) * (state.volume || 0.8);
+    }
+
+    osc.type = waveType;
     osc.frequency.setValueAtTime(freq, time);
 
+    // Envelope shaping
     gain.gain.setValueAtTime(0, time);
     gain.gain.linearRampToValueAtTime(volume, time + 0.002);
-    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + (state.isDelayPhase ? 0.035 : 0.05));
 
     osc.start(time);
-    osc.stop(time + 0.06);
+    osc.stop(time + 0.05);
   }
 }
