@@ -1,9 +1,11 @@
 // src/components/Metronome.jsx
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Activity, ExternalLink } from 'lucide-react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { advanceAutomation } from '../audio/automation';
+import { DebugPanel } from './DebugPanel';
+import { DEBUG_ENABLED, saveDebugPreference } from '../debug';
 import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
@@ -11,6 +13,7 @@ import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES, SUBDIV_METRICS, ACCENT_TYPES, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
+// Stats are only collected in debug mode (?debug); otherwise the engine records nothing.
 export function Metronome() {
   // --- Core Metronome Configuration ---
   const [isPlaying, setIsPlaying] = useState(false);
@@ -199,9 +202,21 @@ export function Metronome() {
       if (lock) lock.release();
     };
   }, [isPlaying]);
+  // Timing debug overlay: starts from ?debug / the saved preference, toggled from the footer
+  const [debugOn, setDebugOn] = useState(DEBUG_ENABLED);
+  const debugRef = useRef(DEBUG_ENABLED);
+  const toggleDebug = () => {
+    const next = !debugRef.current;
+    debugRef.current = next;
+    setDebugOn(next);
+    saveDebugPreference(next);
+    audioEngineRef.current?.setDebug(next);
+  };
+
   // Web Worker & Audio Engine Lifecycle
   useEffect(() => {
     audioEngineRef.current = new AudioEngine();
+    audioEngineRef.current.setDebug(debugRef.current);
 
     workerRef.current = new Worker(
       new URL('../audio/schedulerWorker.js', import.meta.url),
@@ -262,6 +277,7 @@ export function Metronome() {
     } else {
       if (!audioEngineRef.current) {
         audioEngineRef.current = new AudioEngine();
+        audioEngineRef.current.setDebug(debugRef.current);
       }
       audioEngineRef.current.init();
 
@@ -499,7 +515,7 @@ export function Metronome() {
 
       </div>
 
-      <footer className="mt-6 text-center text-[11px] text-slate-400">
+      <footer className="mt-6 flex items-center justify-center gap-4 text-[11px] text-slate-400">
         <a
           href="https://github.com/Muhammad-Raiyan/pulse-metronome"
           target="_blank"
@@ -509,7 +525,17 @@ export function Metronome() {
           <ExternalLink className="w-3 h-3" aria-hidden="true" />
           View source on GitHub
         </a>
+        <button
+          onClick={toggleDebug}
+          aria-pressed={debugOn}
+          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+        >
+          <Activity className="w-3 h-3" aria-hidden="true" />
+          Debug: {debugOn ? 'on' : 'off'}
+        </button>
       </footer>
+
+      {debugOn && <DebugPanel engineRef={audioEngineRef} isPlaying={isPlaying} />}
     </div>
   );
 }

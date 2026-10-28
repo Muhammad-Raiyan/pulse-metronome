@@ -1,7 +1,10 @@
-import { ACCENT_TYPES } from '../constants';
+import { ACCENT_TYPES } from '../constants.js';
+import { AccuracyStats } from './accuracyStats.js';
 
 export class AudioEngine {
-  constructor() {
+  // `stats` is an optional AccuracyStats (debug mode only). When null, nothing is recorded.
+  constructor({ stats = null } = {}) {
+    this.stats = stats;
     this.audioCtx = null;
     this.scheduleAheadTime = 0.1; // 100ms lookahead
     this.nextNoteTime = 0.0;
@@ -9,6 +12,19 @@ export class AudioEngine {
     this.currentSubIndex = 0;
     this.pendingTimeouts = new Set();
     this.activeGains = new Set();
+    this.resetStatsWarmup();
+  }
+
+  // Debug stats skip the first bar: the audio clock and timers are still settling then, which
+  // would show up as fake drift and jitter. `statsFrom` is the audio-clock time of the second
+  // bar's downbeat; nothing is recorded before the audio clock reaches it.
+  resetStatsWarmup() {
+    this.statsFrom = null;
+    this.firstNoteScheduled = false;
+  }
+
+  statsActive() {
+    return this.statsFrom !== null && this.audioCtx.currentTime >= this.statsFrom;
   }
 
   init() {
@@ -23,6 +39,8 @@ export class AudioEngine {
 
   start() {
     this.init();
+    if (this.stats) this.stats.reset();
+    this.resetStatsWarmup();
     this.currentBeatInBar = 0;
     this.currentSubIndex = 0;
     this.nextNoteTime = this.audioCtx.currentTime + 0.05;
@@ -30,16 +48,65 @@ export class AudioEngine {
 
   // Cancel pending visual updates and silence notes that are already scheduled
   stop() {
+    if (this.stats) this.stats.markStopped();
     this.pendingTimeouts.forEach((id) => clearTimeout(id));
     this.pendingTimeouts.clear();
     this.activeGains.forEach((gain) => gain.disconnect());
     this.activeGains.clear();
   }
 
+  // Debug mode can be switched on or off while the app is running
+  setDebug(on) {
+    this.stats = on ? new AccuracyStats() : null;
+  }
+
+  // Current accuracy numbers plus device latency, or null when debug mode is off
+  getDebugSnapshot() {
+    if (!this.stats) return null;
+    const ctx = this.audioCtx;
+    const ms = (v) => (typeof v === 'number' ? v * 1000 : null);
+    return {
+      ...this.stats.snapshot(),
+      lookaheadMs: this.scheduleAheadTime * 1000,
+      baseLatencyMs: ms(ctx?.baseLatency),
+      outputLatencyMs: ms(ctx?.outputLatency),
+      sampleRate: ctx?.sampleRate ?? null,
+      contextState: ctx?.state ?? null,
+    };
+  }
+
   processTick(state, onVisualUpdate, onStateAdvance) {
+    if (this.stats && this.statsActive()) this.stats.tick(performance.now(), this.audioCtx.currentTime);
     while (this.nextNoteTime < this.audioCtx.currentTime + this.scheduleAheadTime) {
+      this.alignPosition(state, onStateAdvance);
       this.scheduleNote(this.nextNoteTime, state, onVisualUpdate);
       this.advanceNote(state, onStateAdvance);
+    }
+  }
+
+  // The meter or subdivision can change while playing (buttons, song sections, sprint
+  // bursts). Make sure our position is still valid for the *current* settings before the
+  // next note is scheduled, so an out-of-range beat/sub index is never played or shown.
+  alignPosition(state, onStateAdvance) {
+    const subdivision = state.subdivision || 1;
+    const beatsPerBar = state.beatsPerBar || 1;
+
+    if (this.currentBeatInBar >= beatsPerBar) {
+      // Meter got shorter than our position: start a fresh bar on its downbeat.
+      // This is a restart, not a completed bar, so no 'bar' event is emitted.
+      this.currentBeatInBar = 0;
+      this.currentSubIndex = 0;
+    } else if (this.currentSubIndex >= subdivision) {
+      // Subdivision got coarser mid-beat (e.g. 10x -> 2x at sub 7): the rest of the
+      // old beat no longer exists, so treat it as finished and move to the next beat.
+      this.currentSubIndex = 0;
+      this.currentBeatInBar++;
+      if (this.currentBeatInBar >= beatsPerBar) {
+        this.currentBeatInBar = 0;
+        if (onStateAdvance) onStateAdvance('bar');
+      } else if (onStateAdvance) {
+        onStateAdvance('beat');
+      }
     }
   }
 
@@ -70,9 +137,21 @@ export class AudioEngine {
     const isMainBeat = subNum === 0;
 
     const delayMs = Math.max(0, (time - this.audioCtx.currentTime) * 1000);
+    // The first downbeat after the opening note marks the end of bar 1
+    if (this.statsFrom === null && this.firstNoteScheduled && beatNum === 0 && subNum === 0) {
+      this.statsFrom = time;
+    }
+    this.firstNoteScheduled = true;
+
+    // Capture the stats object: debug mode can be toggled while a callback is pending
+    const stats = this.stats && this.statsFrom !== null && time >= this.statsFrom ? this.stats : null;
+    const statsSeq = stats
+      ? stats.noteScheduled({ beat: beatNum, sub: subNum, target: time, now: this.audioCtx.currentTime })
+      : -1;
 
     const id = setTimeout(() => {
       this.pendingTimeouts.delete(id);
+      if (stats) stats.visualFired(statsSeq, this.audioCtx.currentTime);
       if (onVisualUpdate) {
         onVisualUpdate(beatNum, subNum);
       }
