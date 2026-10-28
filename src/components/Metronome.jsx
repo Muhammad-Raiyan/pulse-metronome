@@ -23,7 +23,7 @@ export function Metronome() {
     setBeatAccents((prev) => {
       const updated = [...prev];
       updated[0] = 0;
-      
+
       while (updated.length < beatsPerBar) {
         updated.push(1); // Default new beats to Normal
       }
@@ -189,6 +189,33 @@ export function Metronome() {
   useEffect(() => {
     advanceHandlerRef.current = handleStateAdvance;
   });
+
+  // Screen Wake Lock Handler
+    useEffect(() => {
+    let wakeLock = null;
+
+    const requestWakeLock = async () => {
+        if ('wakeLock' in navigator && isPlaying) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+        } catch (err) {
+            console.log('Wake Lock request failed:', err);
+        }
+        }
+    };
+
+    if (isPlaying) {
+        requestWakeLock();
+    } else if (wakeLock) {
+        wakeLock.release().then(() => {
+        wakeLock = null;
+        });
+    }
+
+    return () => {
+        if (wakeLock) wakeLock.release();
+    };
+    }, [isPlaying]);
 
   // Web Worker & Audio Engine Lifecycle
   useEffect(() => {
