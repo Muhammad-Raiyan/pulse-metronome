@@ -3,6 +3,7 @@ export const AUTOMATION_MODES = {
   RAMP: 'gradual',
   JOG_SPRINT: 'jogsprint',
   MUTE_TRAINER: 'mute',
+  SONG_MAP: 'songmap',
 };
 
 export const SPRINT_STRATEGIES = {

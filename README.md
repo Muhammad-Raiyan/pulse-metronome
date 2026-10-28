@@ -1,103 +1,135 @@
-# 🥁 Pulse Metronome
+# Pulse Metronome ⚡
 
-A zero-lag, high-precision web metronome engineered for musicians, drum practice, and tempo training. Built and generated with AI assistance using React, Vite, Tailwind CSS v4, the Web Audio API, and a dedicated Web Worker lookahead scheduler.
+> **Built with AI Assistance**: Designed and engineered using conversational AI to produce a zero-latency, high-precision Web Audio metronome application.
 
----
-
-## ⚡ Key Features
-
-- **Zero-Lag Web Audio Architecture:** Powered by a Web Worker lookahead scheduler running on a separate background thread for rock-solid timing accuracy.
-- **Customizable Beat Accents:** Click individual beat tiles (**1, 2, 3, 4...**) to cycle through accent levels:
-  - `Accented` (High pitch, loud click)
-  - `Normal` (Standard pitch & volume)
-  - `Soft` (Low pitch, quiet click)
-  - `Muted` (Silent beat tile)
-- **4 Advanced Automation & Training Modes:**
-  1. **Manual:** Standard constant click.
-  2. **Ramp Up (Gradual Acceleration):** Automatically increases BPM by $+X$ every $Y$ bars up to a target speed cap.
-  3. **Jog / Sprint Trainer:** Alternates between a comfortable base tempo and a high-intensity burst phase based on BPM jumps or subdivision density bursts.
-  4. **Mute Trainer (Inner Clock Tester):** Alternates between audible bars and silent bars to test and train internal timing.
-- **Start Delay (Count-In Pre-Roll):** Configurable $X$-bar count-in delay featuring a distinct, high-pitched pre-roll tone before the workout begins.
-- **Visual & Audio Speed Limit Cap Alerts:** Distinct chime and glowing banner badges when reaching maximum BPM targets or transitioning into sprint phases.
-- **PWA & Mobile Ready:** Fully installable as a standalone app on iOS, Android, and Windows with offline caching and Web Screen Wake Lock support to keep screens active during practice.
-- **Hands-Free Keyboard Shortcuts:**
-  - `Spacebar`: Toggle Start / Stop
-  - `Up Arrow` / `Down Arrow`: $\pm 1$ BPM
-  - `Shift + Up` / `Shift + Down`: $\pm 4$ BPM
-  - `Alt + Up` / `Alt + Down`: $\pm 8$ BPM
-  - `T`: Tap Tempo
+A zero-lag, production-ready Progressive Web Application (PWA) metronome built for precision practicing, rehearsal, and live performance. Powered by the **Web Audio API** and a **Web Worker lookahead scheduler**, Pulse Metronome delivers microsecond timing accuracy that never stutters, even when your browser tab loses focus or runs in the background.
 
 ---
 
-## 🛠️ Tech Stack & AI Disclosure
+## ✨ Features
 
-- **AI Co-Creator:** Built collaboratively using Google Gemini
-- **Framework:** [React 18 / 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **Audio Engine:** Web Audio API (`AudioContext`, `OscillatorNode`, `GainNode`)
-- **Background Timer:** Dedicated Web Worker (`schedulerWorker.js`)
-- **PWA Integration:** `vite-plugin-pwa`
-- **Icons:** `lucide-react`
+- 🎯 **Zero-Lag Web Worker Lookahead Scheduler**: Audio synthesis runs on an isolated background thread to prevent browser UI layout locks or scroll stutter from throwing off the tempo.
+- 🥁 **Custom Beat Accents**: Click individual beat tiles to cycle accent dynamics (`Accented`, `Normal`, `Soft`, `Muted`).
+- ⚡ **Speed & Practice Automation Modes**:
+  - **Manual Mode**: Classic fixed tempo control.
+  - **Gradual Ramp Up**: Automatically increases BPM by a set increment every $N$ bars up to a defined speed limit cap.
+  - **Jog / Sprint Trainer**: Alternate between rest/jog tempos and burst speeds using BPM jumps or subdivision shifts, complete with audio alert chimes.
+  - **Inner Clock Mute Trainer**: Alternates between active audio bars and silent bars to test your internal timing.
+  - **Multi-Section Song Maps**: Automatically transition tempos, time signatures, and subdivisions on section downbeats.
+- 🎵 **Song & Preset Library (`songs.json`)**: Search by title, artist, or album to instantly load multi-tempo song maps with zero cloud hosting costs ($0 deployment).
+- 📱 **Mobile-First PWA Support**: Installable on iOS Safari and Android Chrome as a standalone, offline-ready app with native status bar theme blending (`black-translucent`).
+- 💡 **Screen Wake Lock**: Keeps your mobile or laptop screen awake while practicing.
+- ⌨️ **Keyboard Shortcuts**: Spacebar (Start/Stop), Up/Down arrows ($\pm 1$, Shift $\pm 4$, Alt $\pm 8$), and 'T' for Tap Tempo.
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Tech Stack
+
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`)
+- **Icons**: Lucide React
+- **Audio Engine**: Web Audio API (`AudioContext`) + Web Worker scheduler (`schedulerWorker.js`)
+- **PWA**: `vite-plugin-pwa`
+- **Deployment**: GitHub Pages (`gh-pages`)
+
+---
+
+## 💻 Local Setup & Development (Windows / macOS / Linux)
 
 ### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or pnpm
 
-Ensure you have [Node.js](https://nodejs.org/) installed on your system.
-
-### Local Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/pulse-metronome.git
-   cd pulse-metronome
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the local development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open your browser at `http://localhost:5173` to test the app.
-
----
-
-## 📦 Production Build & Deployment
-
-### Build Locally
-
-To build the static production bundle with PWA service worker generation:
-
+### 1. Clone the Repository
 ```bash
-npm run build
+git clone https://github.com/YOUR_USERNAME/pulse-metronome.git
+cd pulse-metronome
 ```
 
-The output will be placed in the `dist/` directory.
+### 2. Fixing Line Endings on Windows (`CRLF` vs `LF`)
+If you are developing on Windows, Git may default to converting `LF` line endings to `CRLF`, causing linter warnings or build issues. Configure Git to handle line endings correctly:
 
-### Deploying to Vercel ($0 Free Hosting)
+```powershell
+# Set global or repo-level line ending conversion
+git config core.autocrlf true
 
-1. Push your repository to GitHub.
-2. Sign in to [Vercel](https://vercel.com) using your GitHub account.
-3. Import your `pulse-metronome` repository.
-4. Vercel will automatically detect Vite (`npm run build` outputting to `dist`).
-5. Click **Deploy**. Your app will be live on HTTPS with PWA support!
+# If using Oxlint / Prettier / ESLint and seeing line break errors, format files:
+npx prettier --write .
+```
+
+### 3. Install Dependencies
+```bash
+npm install
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+Open your browser and navigate to `http://localhost:5173`.
 
 ---
 
-## 📱 PWA Installation Instructions
+## 🎵 Customizing Song Maps (`public/songs.json`)
 
-- **iOS (iPhone/iPad):** Open your live site URL in Safari $\rightarrow$ Tap **Share** $\rightarrow$ Select **Add to Home Screen**.
-- **Windows / macOS (Chrome or Edge):** Open the live site URL $\rightarrow$ Click the **Install** button on the right side of the URL bar.
+Song maps are stored in a static JSON file located at `public/songs.json`. You can edit or add new songs directly to this file:
+
+```json
+[
+  {
+    "id": "song-test",
+    "title": "Test Suite (Quick Section Switch)",
+    "artist": "Metronome Dev",
+    "album": "Automation Sandbox",
+    "bpm": 120,
+    "beatsPerBar": 4,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "1. Slow Intro (100 BPM)", "bars": 2, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "2. Mid Groove (120 BPM - 8ths)", "bars": 2, "bpm": 120, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 3, "name": "3. Speed Burst (160 BPM - 16ths)", "bars": 2, "bpm": 160, "beatsPerBar": 4, "subdivision": 4 },
+      { "id": 4, "name": "4. Odd Time Breakdown (130 BPM in 3/4)", "bars": 2, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 }
+    ]
+  }
+]
+```
+
+---
+
+## 🚀 Publishing to GitHub Pages
+
+### 1. Verify `vite.config.js` Base Path
+Ensure your `vite.config.js` base matches your repository name:
+
+```javascript
+export default defineConfig({
+  base: '/pulse-metronome/',
+  // ... plugins
+});
+```
+
+### 2. Deploy to GitHub Pages
+Run the deploy script from your terminal:
+
+```bash
+npm run deploy
+```
+This automatically compiles the production bundle in `dist/` and pushes it to your repository's `gh-pages` branch.
+
+### 3. Enable GitHub Pages in Repo Settings
+1. Navigate to `https://github.com/YOUR_USERNAME/pulse-metronome`.
+2. Go to **Settings** $\rightarrow$ **Pages**.
+3. Under **Build and deployment**, set **Source** to `Deploy from a branch` and select `gh-pages` / `/ (root)`.
+4. Save. Your app will be live at `https://YOUR_USERNAME.github.io/pulse-metronome/`.
+
+---
+
+## 📱 Installing the Mobile PWA (iOS & Android)
+
+- **iOS (Safari)**: Open the live site URL, tap the **Share** button $\rightarrow$ tap **Add to Home Screen**.
+- **Android (Chrome)**: Open the live site URL, tap the three dots menu $\rightarrow$ tap **Install app / Add to Home Screen**.
 
 ---
 
 ## 📄 License
-
-MIT License. Free to modify, adapt, and distribute.
+MIT

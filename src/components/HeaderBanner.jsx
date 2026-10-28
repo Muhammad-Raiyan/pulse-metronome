@@ -1,6 +1,6 @@
 import React from 'react';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES } from '../constants';
-import { AlertCircle, Flame, Timer, VolumeX, Volume2 } from 'lucide-react';
+import { AlertCircle, Flame, Timer, VolumeX, Volume2, Music } from 'lucide-react';
 
 export function HeaderBanner({
   isPlaying,
@@ -20,8 +20,12 @@ export function HeaderBanner({
   isSpeedCapReached,
   isMutePhase,
   muteBarsPlay,
-  muteBarsSilent
+  muteBarsSilent,
+  activeSongMap,
+  currentSectionIndex
 }) {
+  const currentSection = activeSongMap?.sections?.[currentSectionIndex];
+
   return (
     <div className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider mb-2 border transition-all duration-300 ${
       isDelayPhase
@@ -32,6 +36,8 @@ export function HeaderBanner({
         ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 shadow-lg shadow-rose-500/20'
         : isSprintPhase 
         ? 'bg-amber-500/25 border-amber-500/50 text-amber-300 shadow-lg shadow-amber-500/20' 
+        : automationMode === AUTOMATION_MODES.SONG_MAP
+        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300 shadow-lg shadow-cyan-500/10'
         : 'bg-slate-800/80 border-slate-700/60 text-slate-300'
     }`}>
       <span className="flex items-center gap-2">
@@ -58,6 +64,9 @@ export function HeaderBanner({
               ? <><VolumeX className="w-3.5 h-3.5 text-rose-400 animate-pulse" /> 🔇 MUTE TRAINER (SILENT)</>
               : <><Volume2 className="w-3.5 h-3.5 text-cyan-400" /> 🔊 MUTE TRAINER (PLAYING)</>
           )}
+          {!isDelayPhase && automationMode === AUTOMATION_MODES.SONG_MAP && activeSongMap && (
+            <><Music className="w-3.5 h-3.5 text-cyan-400" /> {activeSongMap.title} — {currentSection?.name || 'Section'}</>
+          )}
         </span>
       </span>
 
@@ -73,6 +82,7 @@ export function HeaderBanner({
         {!isDelayPhase && automationMode === AUTOMATION_MODES.MUTE_TRAINER && `Bar ${unitsElapsed + 1}/${
           isMutePhase ? muteBarsSilent : muteBarsPlay
         }`}
+        {!isDelayPhase && automationMode === AUTOMATION_MODES.SONG_MAP && currentSection && `Bar ${unitsElapsed + 1}/${currentSection.bars}`}
       </span>
     </div>
   );

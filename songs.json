@@ -1,0 +1,52 @@
+[
+  {
+    "id": "song-test",
+    "title": "Test Suite (Quick Section Switch)",
+    "artist": "Metronome Dev",
+    "album": "Automation Sandbox",
+    "bpm": 120,
+    "beatsPerBar": 4,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "1. Slow Intro (100 BPM)", "bars": 2, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "2. Mid Groove (120 BPM - 8ths)", "bars": 2, "bpm": 120, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 3, "name": "3. Speed Burst (160 BPM - 16ths)", "bars": 2, "bpm": 160, "beatsPerBar": 4, "subdivision": 4 },
+      { "id": 4, "name": "4. Odd Time Breakdown (130 BPM in 3/4)", "bars": 2, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "song-001",
+    "title": "Superstition",
+    "artist": "Stevie Wonder",
+    "album": "Talking Book",
+    "bpm": 100,
+    "beatsPerBar": 4,
+    "subdivision": 2,
+    "beatAccents": [0, 1, 1, 1]
+  },
+  {
+    "id": "song-002",
+    "title": "Master of Puppets",
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "bpm": 212,
+    "beatsPerBar": 4,
+    "hasSections": true,
+    "sections": [
+      { "id": 1, "name": "Fast Main Riff", "bars": 12, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 2, "name": "Verse 1", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
+      { "id": 3, "name": "Clean Interlude", "bars": 8, "bpm": 110, "beatsPerBar": 4, "subdivision": 2 },
+      { "id": 4, "name": "Guitar Solo", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 }
+    ]
+  },
+  {
+    "id": "song-003",
+    "title": "Take Five",
+    "artist": "Dave Brubeck",
+    "album": "Time Out",
+    "bpm": 174,
+    "beatsPerBar": 5,
+    "subdivision": 1,
+    "beatAccents": [0, 2, 1, 0, 2]
+  }
+]

@@ -4,6 +4,7 @@ import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
+import { SongMapLoader } from './SongMapLoader';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES, SUBDIV_METRICS } from '../constants';
 
 export function Metronome() {
@@ -14,6 +15,10 @@ export function Metronome() {
   const [subdivision, setSubdivision] = useState(1);
   const [volume, setVolume] = useState(0.8);
   const [activeBeat, setActiveBeat] = useState({ beat: 0, sub: 0 });
+
+  // --- Song Map State ---
+  const [activeSongMap, setActiveSongMap] = useState(null);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   // Per-beat Accents Array (default: [Accented, Normal, Normal, Normal])
   const [beatAccents, setBeatAccents] = useState([0, 1, 1, 1]);
@@ -82,7 +87,7 @@ export function Metronome() {
     ? (isSprintPhase ? sprintSubdiv : jogSubdiv)
     : subdivision;
 
-  // Unified State Object passed to Audio Engine
+  // Unified State Object passed to Audio Engine (Updated to include Song Map state)
   const stateRef = useRef({});
   useEffect(() => {
     stateRef.current = {
@@ -113,11 +118,13 @@ export function Metronome() {
       isSpeedCapReached,
       muteBarsPlay,
       muteBarsSilent,
-      isMutePhase
+      isMutePhase,
+      activeSongMap,          // <-- Included for Worker Loop
+      currentSectionIndex     // <-- Included for Worker Loop
     };
   });
 
-  // Handle Bar/Beat Progressions for Automation & Mute Trainer
+  // Handle Bar/Beat Progressions for Automation & Mute Trainer & Song Maps
   const handleStateAdvance = (type) => {
     const s = stateRef.current;
 
@@ -183,6 +190,37 @@ export function Metronome() {
         return next;
       });
     }
+    // 4. Song Map Multi-Section Progression
+    else if (s.automationMode === AUTOMATION_MODES.SONG_MAP && s.activeSongMap && type === 'bar') {
+      const currentSection = s.activeSongMap.sections?.[s.currentSectionIndex];
+
+      if (currentSection) {
+        setUnitsElapsed((prevBars) => {
+          const nextBars = prevBars + 1;
+
+          if (nextBars >= currentSection.bars) {
+            const nextIndex = s.currentSectionIndex + 1;
+
+            if (nextIndex < s.activeSongMap.sections.length) {
+              const nextSec = s.activeSongMap.sections[nextIndex];
+              setCurrentSectionIndex(nextIndex);
+
+              // Apply section parameters on the downbeat
+              if (nextSec.bpm) setBpm(nextSec.bpm);
+              if (nextSec.beatsPerBar) setBeatsPerBar(nextSec.beatsPerBar);
+              if (nextSec.subdivision) setSubdivision(nextSec.subdivision);
+            } else {
+              // Loop back to start of song
+              setCurrentSectionIndex(0);
+              const firstSec = s.activeSongMap.sections[0];
+              if (firstSec.bpm) setBpm(firstSec.bpm);
+            }
+            return 0;
+          }
+          return nextBars;
+        });
+      }
+    }
   };
 
   const advanceHandlerRef = useRef(handleStateAdvance);
@@ -191,31 +229,31 @@ export function Metronome() {
   });
 
   // Screen Wake Lock Handler
-    useEffect(() => {
+  useEffect(() => {
     let wakeLock = null;
 
     const requestWakeLock = async () => {
-        if ('wakeLock' in navigator && isPlaying) {
+      if ('wakeLock' in navigator && isPlaying) {
         try {
-            wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock = await navigator.wakeLock.request('screen');
         } catch (err) {
-            console.log('Wake Lock request failed:', err);
+          console.log('Wake Lock request failed:', err);
         }
-        }
+      }
     };
 
     if (isPlaying) {
-        requestWakeLock();
+      requestWakeLock();
     } else if (wakeLock) {
-        wakeLock.release().then(() => {
+      wakeLock.release().then(() => {
         wakeLock = null;
-        });
+      });
     }
 
     return () => {
-        if (wakeLock) wakeLock.release();
+      if (wakeLock) wakeLock.release();
     };
-    }, [isPlaying]);
+  }, [isPlaying]);
 
   // Web Worker & Audio Engine Lifecycle
   useEffect(() => {
@@ -248,50 +286,50 @@ export function Metronome() {
     };
   }, []);
 
- const togglePlay = () => {
-  if (isPlaying) {
-    workerRef.current.postMessage({ command: 'stop' });
-    setIsPlaying(false);
-    setIsSprintPhase(false);
-    setIsDelayPhase(false);
-    setIsMutePhase(false);
-    setUnitsElapsed(0);
-    setDelayBarsElapsed(0);
-    setActiveBeat({ beat: 0, sub: 0 });
-  } else {
-    // 1. MUST INITIALIZE & RESUME AUDIO CONTEXT SYNCHRONOUSLY ON USER TAP
-    if (!audioEngineRef.current) {
-      audioEngineRef.current = new AudioEngine();
+  const togglePlay = () => {
+    if (isPlaying) {
+      workerRef.current.postMessage({ command: 'stop' });
+      setIsPlaying(false);
+      setIsSprintPhase(false);
+      setIsDelayPhase(false);
+      setIsMutePhase(false);
+      setUnitsElapsed(0);
+      setDelayBarsElapsed(0);
+      setCurrentSectionIndex(0);
+      setActiveBeat({ beat: 0, sub: 0 });
+    } else {
+      if (!audioEngineRef.current) {
+        audioEngineRef.current = new AudioEngine();
+      }
+      audioEngineRef.current.init();
+
+      if (audioEngineRef.current.audioCtx) {
+        const buffer = audioEngineRef.current.audioCtx.createBuffer(1, 1, 22050);
+        const source = audioEngineRef.current.audioCtx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioEngineRef.current.audioCtx.destination);
+        source.start(0);
+      }
+
+      setUnitsElapsed(0);
+      setDelayBarsElapsed(0);
+      setCurrentSectionIndex(0);
+      setIsSprintPhase(false);
+      setIsMutePhase(false);
+
+      if (startDelayBars > 0) {
+        setIsDelayPhase(true);
+      }
+
+      if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
+        setBpm(jogBpm);
+      }
+
+      audioEngineRef.current.start(bpm);
+      workerRef.current.postMessage({ command: 'start' });
+      setIsPlaying(true);
     }
-    audioEngineRef.current.init();
-
-    // 2. Play a brief silent buffer to guarantee iOS Safari context unlock
-    if (audioEngineRef.current.audioCtx) {
-      const buffer = audioEngineRef.current.audioCtx.createBuffer(1, 1, 22050);
-      const source = audioEngineRef.current.audioCtx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioEngineRef.current.audioCtx.destination);
-      source.start(0);
-    }
-
-    setUnitsElapsed(0);
-    setDelayBarsElapsed(0);
-    setIsSprintPhase(false);
-    setIsMutePhase(false);
-
-    if (startDelayBars > 0) {
-      setIsDelayPhase(true);
-    }
-
-    if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
-      setBpm(jogBpm);
-    }
-
-    audioEngineRef.current.start(bpm);
-    workerRef.current.postMessage({ command: 'start' });
-    setIsPlaying(true);
-  }
-};
+  };
 
   const handleTapTempo = () => {
     const now = performance.now();
@@ -337,6 +375,32 @@ export function Metronome() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying]);
 
+  const handleSelectSong = (song) => {
+    setActiveSongMap(song);
+    setCurrentSectionIndex(0);
+    setUnitsElapsed(0);
+
+    if (song.sections && song.sections.length > 0) {
+      const firstSec = song.sections[0];
+      setBpm(firstSec.bpm || song.bpm || 120);
+      setBeatsPerBar(firstSec.beatsPerBar || song.beatsPerBar || 4);
+      setSubdivision(firstSec.subdivision || song.subdivision || 1);
+      setAutomationMode(AUTOMATION_MODES.SONG_MAP);
+    } else {
+      if (song.bpm) setBpm(song.bpm);
+      if (song.beatsPerBar) setBeatsPerBar(song.beatsPerBar);
+      if (song.subdivision) setSubdivision(song.subdivision);
+    }
+
+    if (song.beatAccents && Array.isArray(song.beatAccents)) {
+      setBeatAccents(song.beatAccents);
+    }
+
+    if (isPlaying) {
+      togglePlay();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 md:p-6 font-sans">
       <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -363,6 +427,8 @@ export function Metronome() {
               isMutePhase={isMutePhase}
               muteBarsPlay={muteBarsPlay}
               muteBarsSilent={muteBarsSilent}
+              activeSongMap={activeSongMap}
+              currentSectionIndex={currentSectionIndex}
             />
 
             <MainDisplay
@@ -426,6 +492,8 @@ export function Metronome() {
             muteBarsSilent={muteBarsSilent}
             setMuteBarsSilent={setMuteBarsSilent}
           />
+
+          <SongMapLoader onSelectSong={handleSelectSong} />
         </div>
 
       </div>
