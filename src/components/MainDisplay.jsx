@@ -60,35 +60,19 @@ export function MainDisplay({
 
         {/* Yellow Sub-tick Dot Tracker */}
         <div className="flex items-center justify-center gap-2 py-2">
-          {activeSubdiv === 1 ? (
-            Array.from({ length: beatsPerBar }).map((_, b) => {
-              const isSubActive = isPlaying && activeBeat.beat === b;
-              return (
-                <div
-                  key={b}
-                  className={`w-3 h-3 rounded-full transition-all duration-75 ${
-                    isSubActive
-                      ? 'bg-amber-400 scale-125 shadow-md shadow-amber-400/80'
-                      : 'bg-slate-800/60'
-                  }`}
-                />
-              );
-            })
-          ) : (
-            Array.from({ length: activeSubdiv }).map((_, s) => {
-              const isSubActive = isPlaying && activeBeat.sub === s;
-              return (
-                <div
-                  key={s}
-                  className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-75 ${
-                    isSubActive
-                      ? 'bg-amber-400 scale-125 shadow-md shadow-amber-400/80'
-                      : 'bg-slate-800'
-                  }`}
-                />
-              );
-            })
-          )}
+          {Array.from({ length: activeSubdiv }).map((_, s) => {
+            const isSubActive = isPlaying && activeBeat.sub === s;
+            return (
+              <div
+                key={s}
+                className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-75 ${
+                  isSubActive
+                    ? 'bg-amber-400 scale-125 shadow-md shadow-amber-400/80'
+                    : 'bg-slate-800'
+                }`}
+              />
+            );
+          })}
         </div>
       </div>
 

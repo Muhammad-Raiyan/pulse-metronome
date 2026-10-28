@@ -48,7 +48,7 @@ export function Metronome() {
   };
 
   // --- Count-In Delay Configuration ---
-  const [startDelayBars, setStartDelayBars] = useState(1);
+  const [startDelayBars, setStartDelayBars] = useState(0);
   const [isDelayPhase, setIsDelayPhase] = useState(false);
   const [delayBarsElapsed, setDelayBarsElapsed] = useState(0);
 
