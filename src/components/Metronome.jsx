@@ -1,6 +1,7 @@
 // src/components/Metronome.jsx
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { ExternalLink } from 'lucide-react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { advanceAutomation } from '../audio/automation';
 import { HeaderBanner } from './HeaderBanner';
@@ -497,6 +498,18 @@ export function Metronome() {
         </div>
 
       </div>
+
+      <footer className="mt-6 text-center text-[11px] text-slate-400">
+        <a
+          href="https://github.com/Muhammad-Raiyan/pulse-metronome"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+        >
+          <ExternalLink className="w-3 h-3" aria-hidden="true" />
+          View source on GitHub
+        </a>
+      </footer>
     </div>
   );
 }
