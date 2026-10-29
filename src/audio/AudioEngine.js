@@ -1,6 +1,16 @@
 import { ACCENT_TYPES } from '../constants.js';
 import { AccuracyStats } from './accuracyStats.js';
 
+// iOS Safari silences Web Audio when the ringer switch is on silent. The 'playback' audio
+// session type (newer Safari) makes the page's audio ignore the switch. Harmless elsewhere.
+export function enablePlaybackAudioSession(nav = globalThis.navigator) {
+  try {
+    if (nav && nav.audioSession) nav.audioSession.type = 'playback';
+  } catch {
+    // unsupported value or locked down: carry on with the default session
+  }
+}
+
 export class AudioEngine {
   // `stats` is an optional AccuracyStats (debug mode only). When null, nothing is recorded.
   constructor({ stats = null } = {}) {
@@ -30,11 +40,21 @@ export class AudioEngine {
   init() {
     if (!this.audioCtx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
+      enablePlaybackAudioSession();
       this.audioCtx = new AudioContext();
     }
-    if (this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
-    }
+    this.resumeIfNeeded();
+  }
+
+  // Bring the context back after the browser paused it (power saving, a phone call, Siri,
+  // switching apps). iOS Safari reports this as 'interrupted' as well as 'suspended'.
+  // Safe to call often; does nothing while the context is running.
+  resumeIfNeeded() {
+    const ctx = this.audioCtx;
+    if (!ctx || ctx.state === 'running' || ctx.state === 'closed') return;
+    const pending = ctx.resume();
+    // Some browsers refuse without a user gesture; the next tap on Play retries
+    if (pending && typeof pending.catch === 'function') pending.catch(() => {});
   }
 
   start() {
@@ -76,6 +96,9 @@ export class AudioEngine {
   }
 
   processTick(state, onVisualUpdate, onStateAdvance) {
+    // While the context is paused its clock stops, so no new notes get scheduled; retrying
+    // here (every tick) is what brings the audio back as soon as the browser allows it.
+    this.resumeIfNeeded();
     if (this.stats && this.statsActive()) this.stats.tick(performance.now(), this.audioCtx.currentTime);
     while (this.nextNoteTime < this.audioCtx.currentTime + this.scheduleAheadTime) {
       this.alignPosition(state, onStateAdvance);
@@ -164,10 +187,6 @@ export class AudioEngine {
   playTone(time, isMainBeat, beatNum, state) {
     if (!this.audioCtx) return;
 
-    // Auto-resume if context was suspended by mobile browser power-saving
-    if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-    }
     // 0. MUTE TRAINER SILENT BAR CHECK
     if (state.isMutePhase) return;
 

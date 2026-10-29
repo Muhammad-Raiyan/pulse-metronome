@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { AudioEngine } from './AudioEngine.js';
+import { AudioEngine, enablePlaybackAudioSession } from './AudioEngine.js';
 
 // Engine with a fake clock and recording stubs, so no real audio is needed
 function makeEngine(beat = 0, sub = 0) {
@@ -90,4 +90,53 @@ test('every scheduled note stays in range while the settings shrink during playb
     assert.ok(beat < 3, `beat ${beat} out of range for 3 beats`);
   }
   engine.stop();
+});
+
+// --- audio session / interruption handling ---
+function resumeSpy(state, result) {
+  const calls = { n: 0 };
+  const engine = new AudioEngine();
+  engine.audioCtx = { state, resume() { calls.n++; return result; } };
+  return { engine, calls };
+}
+
+test('resumeIfNeeded resumes a suspended or iOS-interrupted context, but not a running one', () => {
+  for (const state of ['suspended', 'interrupted']) {
+    const { engine, calls } = resumeSpy(state, Promise.resolve());
+    engine.resumeIfNeeded();
+    assert.equal(calls.n, 1, state);
+  }
+  for (const state of ['running', 'closed']) {
+    const { engine, calls } = resumeSpy(state, Promise.resolve());
+    engine.resumeIfNeeded();
+    assert.equal(calls.n, 0, state);
+  }
+});
+
+test('a refused resume does not throw or leave an unhandled rejection', async () => {
+  const { engine } = resumeSpy('interrupted', Promise.reject(new Error('needs a user gesture')));
+  engine.resumeIfNeeded();
+  await new Promise((r) => setImmediate(r)); // an unhandled rejection would fail the run here
+});
+
+test('resumeIfNeeded is a no-op before the context exists', () => {
+  assert.doesNotThrow(() => new AudioEngine().resumeIfNeeded());
+});
+
+test('every scheduler tick retries the resume, so audio returns after an interruption', () => {
+  const { engine, calls } = resumeSpy('interrupted', Promise.resolve());
+  engine.audioCtx.currentTime = 0;
+  engine.nextNoteTime = 10; // nothing due: only the resume attempt should happen
+  for (let i = 0; i < 3; i++) engine.processTick({ bpm: 120, subdivision: 1, beatsPerBar: 4 }, () => {}, () => {});
+  assert.equal(calls.n, 3);
+});
+
+test('enablePlaybackAudioSession sets the playback session when supported and tolerates its absence', () => {
+  const nav = { audioSession: { type: 'auto' } };
+  enablePlaybackAudioSession(nav);
+  assert.equal(nav.audioSession.type, 'playback');
+  assert.doesNotThrow(() => enablePlaybackAudioSession({}));
+  assert.doesNotThrow(() => enablePlaybackAudioSession(undefined));
+  const locked = { get audioSession() { throw new Error('blocked'); } };
+  assert.doesNotThrow(() => enablePlaybackAudioSession(locked));
 });

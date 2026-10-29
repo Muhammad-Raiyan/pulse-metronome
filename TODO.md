@@ -31,8 +31,8 @@ Engineering clean-up and follow-ups. Line counts are rough estimates from a code
 
 - [ ] Presets saved in `localStorage` (named slots).
 - [ ] Shareable links (`?bpm=120&ts=7&sub=2`).
-- [ ] iOS audio fixes: resume after an `interrupted` AudioContext, `navigator.audioSession.type = 'playback'`
-  for the silent switch; optional "Install on iPhone" hint.
+- [x] iOS audio fixes (code done, **needs a real-iPhone test**): `navigator.audioSession.type = 'playback'` for the silent switch, and the context is resumed from`n  `suspended` *and* `interrupted` on every scheduler tick. Not done: silent looping `<audio>` fallback for older iOS without `audioSession`,
+  a "Tap to resume audio" message, and an "Install on iPhone" hint.
 - [ ] Debug CSV/JSON download of the last 100 ticks.
 - [ ] Optional: raise the scheduler lookahead from 100 ms to ~200 ms if late notes show up on a real device
   (costs a slightly slower response to tempo changes mid-play). Left alone for now.
