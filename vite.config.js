@@ -14,7 +14,7 @@ export default defineConfig({
         // Include songs.json so the song library works offline
         globPatterns: ['**/*.{js,css,html,svg,png,json,webmanifest}']
       },
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'Pulse Metronome',
         short_name: 'Pulse',
