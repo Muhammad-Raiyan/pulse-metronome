@@ -11,7 +11,7 @@ import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
-import { AUTOMATION_MODES, SPRINT_STRATEGIES, SUBDIV_METRICS, ACCENT_TYPES, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
+import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
 // Stats are only collected in debug mode (?debug); otherwise the engine records nothing.
 export function Metronome() {
@@ -69,25 +69,15 @@ export function Metronome() {
 
   // --- Automation Engine State ---
   const [automationMode, setAutomationMode] = useState(AUTOMATION_MODES.MANUAL);
-  const [gradualInterval, setGradualInterval] = useState(4);
-  const [gradualStep, setGradualStep] = useState(4);
-  const [gradualCap, setGradualCap] = useState(200);
-
-  const [sprintType, setSprintType] = useState(SPRINT_STRATEGIES.BPM);
-  const [jogBpm, setJogBpm] = useState(100);
-  const [sprintBpm, setSprintBpm] = useState(140);
-  const [jogBars, setJogBars] = useState(4);
-  const [sprintBars, setSprintBars] = useState(2);
-
-  const [subdivMetric, setSubdivMetric] = useState(SUBDIV_METRICS.BARS);
-  const [jogSubdiv, setJogSubdiv] = useState(2);
-  const [sprintSubdiv, setSprintSubdiv] = useState(4);
-  const [jogUnits, setJogUnits] = useState(3);
-  const [sprintUnits, setSprintUnits] = useState(1);
+  // Ramp / Sprint / Mute settings live in one object; change them with updateTrainer(key, value)
+  const [trainer, setTrainer] = useState(DEFAULT_TRAINER);
+  const updateTrainer = useCallback(
+    (key, value) => setTrainer((prev) => (prev[key] === value ? prev : { ...prev, [key]: value })),
+    []
+  );
+  const { gradualCap, sprintType, jogBpm, sprintSubdiv, jogSubdiv } = trainer;
 
   // --- Mute Trainer State ---
-  const [muteBarsPlay, setMuteBarsPlay] = useState(3);
-  const [muteBarsSilent, setMuteBarsSilent] = useState(1);
   const [isMutePhase, setIsMutePhase] = useState(false);
 
   const [isSprintPhase, setIsSprintPhase] = useState(false);
@@ -115,27 +105,13 @@ export function Metronome() {
       volume,
       beatAccents,
       automationMode,
-      gradualInterval,
-      gradualStep,
-      gradualCap,
-      sprintType,
-      jogBpm,
-      sprintBpm,
-      jogBars,
-      sprintBars,
-      subdivMetric,
-      jogSubdiv,
-      sprintSubdiv,
-      jogUnits,
-      sprintUnits,
+      ...trainer,
       isSprintPhase,
       unitsElapsed,
       startDelayBars,
       isDelayPhase,
       delayBarsElapsed,
       isSpeedCapReached,
-      muteBarsPlay,
-      muteBarsSilent,
       isMutePhase,
       activeSongMap,
       currentSectionIndex
@@ -429,19 +405,11 @@ export function Metronome() {
               startDelayBars={startDelayBars}
               delayBarsElapsed={delayBarsElapsed}
               automationMode={automationMode}
-              gradualStep={gradualStep}
-              gradualInterval={gradualInterval}
+              trainer={trainer}
               isSprintPhase={isSprintPhase}
               unitsElapsed={unitsElapsed}
-              sprintType={sprintType}
-              sprintBars={sprintBars}
-              sprintUnits={sprintUnits}
-              jogBars={jogBars}
-              jogUnits={jogUnits}
               isSpeedCapReached={isSpeedCapReached}
               isMutePhase={isMutePhase}
-              muteBarsPlay={muteBarsPlay}
-              muteBarsSilent={muteBarsSilent}
               activeSongMap={activeSongMap}
               currentSectionIndex={currentSectionIndex}
             />
@@ -477,36 +445,8 @@ export function Metronome() {
           <AutomationEngine
             automationMode={automationMode}
             setAutomationMode={handleModeChange}
-            gradualInterval={gradualInterval}
-            setGradualInterval={setGradualInterval}
-            gradualStep={gradualStep}
-            setGradualStep={setGradualStep}
-            gradualCap={gradualCap}
-            setGradualCap={setGradualCap}
-            sprintType={sprintType}
-            setSprintType={setSprintType}
-            jogBpm={jogBpm}
-            setJogBpm={setJogBpm}
-            sprintBpm={sprintBpm}
-            setSprintBpm={setSprintBpm}
-            jogBars={jogBars}
-            setJogBars={setJogBars}
-            sprintBars={sprintBars}
-            setSprintBars={setSprintBars}
-            subdivMetric={subdivMetric}
-            setSubdivMetric={setSubdivMetric}
-            jogSubdiv={jogSubdiv}
-            setJogSubdiv={setJogSubdiv}
-            sprintSubdiv={sprintSubdiv}
-            setSprintSubdiv={setSprintSubdiv}
-            jogUnits={jogUnits}
-            setJogUnits={setJogUnits}
-            sprintUnits={sprintUnits}
-            setSprintUnits={setSprintUnits}
-            muteBarsPlay={muteBarsPlay}
-            setMuteBarsPlay={setMuteBarsPlay}
-            muteBarsSilent={muteBarsSilent}
-            setMuteBarsSilent={setMuteBarsSilent}
+            trainer={trainer}
+            onTrainerChange={updateTrainer}
             activeSongMap={activeSongMap}
           />
 

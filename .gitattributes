@@ -1,0 +1,8 @@
+# Keep line endings consistent across platforms: LF in the repo and in working copies.
+* text=auto eol=lf
+
+# Binary files: never touch
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary

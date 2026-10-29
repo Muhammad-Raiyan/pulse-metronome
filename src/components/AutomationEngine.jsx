@@ -123,42 +123,15 @@ function SubdivPanel({ title, tone, name, subdiv, setSubdiv, units, setUnits, un
 
 const SECTION = 'p-4 rounded-2xl bg-slate-950 border border-slate-800';
 
-export function AutomationEngine({
-  automationMode,
-  setAutomationMode,
-  gradualInterval,
-  setGradualInterval,
-  gradualStep,
-  setGradualStep,
-  gradualCap,
-  setGradualCap,
-  sprintType,
-  setSprintType,
-  jogBpm,
-  setJogBpm,
-  sprintBpm,
-  setSprintBpm,
-  jogBars,
-  setJogBars,
-  sprintBars,
-  setSprintBars,
-  subdivMetric,
-  setSubdivMetric,
-  jogSubdiv,
-  setJogSubdiv,
-  sprintSubdiv,
-  setSprintSubdiv,
-  jogUnits,
-  setJogUnits,
-  sprintUnits,
-  setSprintUnits,
-  muteBarsPlay,
-  setMuteBarsPlay,
-  muteBarsSilent,
-  setMuteBarsSilent,
-  activeSongMap
-}) {
-  const hasSections = activeSongMap?.sections?.length > 0;
+export function AutomationEngine({ automationMode, setAutomationMode, trainer, onTrainerChange, activeSongMap }) {
+  // set('jogBpm') -> a (value) => void setter for that one setting
+  const set = (key) => (value) => onTrainerChange(key, value);
+  const {
+    gradualInterval, gradualStep, gradualCap,
+    sprintType, jogBpm, sprintBpm, jogBars, sprintBars,
+    subdivMetric, jogSubdiv, sprintSubdiv, jogUnits, sprintUnits,
+    muteBarsPlay, muteBarsSilent
+  } = trainer;  const hasSections = activeSongMap?.sections?.length > 0;
   const unitLabel = subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats';
 
   return (
@@ -210,13 +183,13 @@ export function AutomationEngine({
           </span>
           <div className="grid grid-cols-3 gap-3">
             <Field label="Every (Bars)" labelClass="font-semibold mb-1">
-              <NumberInput min={1} max={64} aria-label="Ramp: raise tempo every N bars" value={gradualInterval} onChange={setGradualInterval} className={RAMP_INPUT} />
+              <NumberInput min={1} max={64} aria-label="Ramp: raise tempo every N bars" value={gradualInterval} onChange={set('gradualInterval')} className={RAMP_INPUT} />
             </Field>
             <Field label="Add (+BPM)" labelClass="font-semibold mb-1">
-              <NumberInput min={1} max={30} aria-label="Ramp: BPM increase per step" value={gradualStep} onChange={setGradualStep} className={RAMP_INPUT} />
+              <NumberInput min={1} max={30} aria-label="Ramp: BPM increase per step" value={gradualStep} onChange={set('gradualStep')} className={RAMP_INPUT} />
             </Field>
             <Field label="Cap Limit" labelClass="font-semibold mb-1">
-              <NumberInput min={40} max={300} aria-label="Ramp: maximum BPM" value={gradualCap} onChange={setGradualCap} className={RAMP_INPUT} />
+              <NumberInput min={40} max={300} aria-label="Ramp: maximum BPM" value={gradualCap} onChange={set('gradualCap')} className={RAMP_INPUT} />
             </Field>
           </div>
         </div>
@@ -233,7 +206,7 @@ export function AutomationEngine({
             <Segmented
               label="Sprint strategy"
               value={sprintType}
-              onChange={setSprintType}
+              onChange={set('sprintType')}
               options={[
                 { value: SPRINT_STRATEGIES.BPM, label: 'BPM Jump' },
                 { value: SPRINT_STRATEGIES.SUBDIVISION, label: 'Subdivision Burst' }
@@ -244,8 +217,8 @@ export function AutomationEngine({
           {/* SPRINT TYPE A: BPM JUMP */}
           {sprintType === SPRINT_STRATEGIES.BPM && (
             <div className="grid grid-cols-2 gap-3">
-              <BpmBarsPanel title="🏃 Jog Phase" tone="rest" name="Jog" bpm={jogBpm} setBpm={setJogBpm} bars={jogBars} setBars={setJogBars} />
-              <BpmBarsPanel title="🔥 Sprint Burst" tone="burst" name="Sprint" bpm={sprintBpm} setBpm={setSprintBpm} bars={sprintBars} setBars={setSprintBars} />
+              <BpmBarsPanel title="🏃 Jog Phase" tone="rest" name="Jog" bpm={jogBpm} setBpm={set('jogBpm')} bars={jogBars} setBars={set('jogBars')} />
+              <BpmBarsPanel title="🔥 Sprint Burst" tone="burst" name="Sprint" bpm={sprintBpm} setBpm={set('sprintBpm')} bars={sprintBars} setBars={set('sprintBars')} />
             </div>
           )}
 
@@ -257,7 +230,7 @@ export function AutomationEngine({
                 <Segmented
                   label="Interval metric"
                   value={subdivMetric}
-                  onChange={setSubdivMetric}
+                  onChange={set('subdivMetric')}
                   options={[
                     { value: SUBDIV_METRICS.BARS, label: 'Bars' },
                     { value: SUBDIV_METRICS.BEATS, label: 'Beats' }
@@ -266,8 +239,8 @@ export function AutomationEngine({
               </div>
 
               <div className="grid grid-cols-1 gap-3">
-                <SubdivPanel title="🏃 Rest Subdiv" tone="rest" name="Rest" subdiv={jogSubdiv} setSubdiv={setJogSubdiv} units={jogUnits} setUnits={setJogUnits} unitLabel={unitLabel} />
-                <SubdivPanel title="🔥 Burst Subdiv" tone="burst" name="Burst" subdiv={sprintSubdiv} setSubdiv={setSprintSubdiv} units={sprintUnits} setUnits={setSprintUnits} unitLabel={unitLabel} />
+                <SubdivPanel title="🏃 Rest Subdiv" tone="rest" name="Rest" subdiv={jogSubdiv} setSubdiv={set('jogSubdiv')} units={jogUnits} setUnits={set('jogUnits')} unitLabel={unitLabel} />
+                <SubdivPanel title="🔥 Burst Subdiv" tone="burst" name="Burst" subdiv={sprintSubdiv} setSubdiv={set('sprintSubdiv')} units={sprintUnits} setUnits={set('sprintUnits')} unitLabel={unitLabel} />
               </div>
             </div>
           )}
@@ -283,10 +256,10 @@ export function AutomationEngine({
           </span>
           <div className="grid grid-cols-2 gap-3">
             <PhasePanel title="🔊 Play Bars" tone="rest">
-              <Num min={1} max={32} aria-label="Mute trainer: bars playing" value={muteBarsPlay} onChange={setMuteBarsPlay} />
+              <Num min={1} max={32} aria-label="Mute trainer: bars playing" value={muteBarsPlay} onChange={set('muteBarsPlay')} />
             </PhasePanel>
             <PhasePanel title="🔇 Silent Bars" tone="silent">
-              <Num tone="silent" min={1} max={32} aria-label="Mute trainer: silent bars" value={muteBarsSilent} onChange={setMuteBarsSilent} />
+              <Num tone="silent" min={1} max={32} aria-label="Mute trainer: silent bars" value={muteBarsSilent} onChange={set('muteBarsSilent')} />
             </PhasePanel>
           </div>
         </div>

@@ -43,3 +43,25 @@ export const SUBDIVISION_OPTIONS = [
   { value: 10, label: '10x Decuplets' }
 ];
 export const ACCENT_LABELS = ['Accented', 'Normal', 'Soft', 'Muted'];
+
+// User-configured trainer values (Ramp, Sprint, Mute). Runtime phase state lives elsewhere.
+export const DEFAULT_TRAINER = {
+  // Ramp
+  gradualInterval: 4,
+  gradualStep: 4,
+  gradualCap: 200,
+  // Sprint
+  sprintType: SPRINT_STRATEGIES.BPM,
+  jogBpm: 100,
+  sprintBpm: 140,
+  jogBars: 4,
+  sprintBars: 2,
+  subdivMetric: SUBDIV_METRICS.BARS,
+  jogSubdiv: 2,
+  sprintSubdiv: 4,
+  jogUnits: 3,
+  sprintUnits: 1,
+  // Mute
+  muteBarsPlay: 3,
+  muteBarsSilent: 1,
+};

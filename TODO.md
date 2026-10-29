@@ -4,13 +4,11 @@ Engineering clean-up and follow-ups. Line counts are rough estimates from a code
 
 ## Simplification
 
-- [ ] **Replace the ~30 automation `useState` calls with one settings object.**
-  `Metronome.jsx` declares every trainer setting separately, copies them all into `stateRef`, and passes
-  36 props (a value and a setter for each) to `AutomationEngine`. A single `settings` object with an
-  `update(key, value)` helper lets `stateRef` be a spread of it and shrinks `AutomationEngine` to ~3 props.
-  Estimated saving ~100 lines in `Metronome.jsx`; adding a setting would no longer touch five places.
-  Risk: this is the code that decides what plays. `automation.test.js` covers the rules but not the React
-  wiring, so add a test or check manually in the browser (Ramp, Sprint, Mute, Song Map).
+- [x] **Replace the ~30 automation `useState` calls with one settings object.** Done: the 15 Ramp/Sprint/Mute settings now live in one `trainer` object (`DEFAULT_TRAINER` in `constants.js`),
+  changed with `updateTrainer(key, value)`. `AutomationEngine` takes 5 props instead of 36, `HeaderBanner` takes
+  `trainer` instead of 9 separate props, and `stateRef` spreads the object. Still to do: check Ramp, Sprint (both
+  strategies), Mute and Song Map by hand in the browser, since `automation.test.js` does not cover the React wiring.
+
 - [ ] **Lazy-load the debug panel** (`React.lazy` + `Suspense`) so ~440 lines of debug UI and stats code stay
   out of the normal bundle. Optional: trim the tick strip and the "slowest five" list.
 - [ ] **Small cleanups in `Metronome.jsx`.**
@@ -20,9 +18,8 @@ Engineering clean-up and follow-ups. Line counts are rough estimates from a code
 
 ## Repository and tooling
 
-- [ ] **Normalise line endings.** Source files mix CRLF and LF, which makes multi-line edits and diffs
-  unreliable. Add `.gitattributes` with `* text=auto eol=lf`, then commit the normalisation on its own
-  (it will be a noisy commit).
+- [x] **Normalise line endings.** Done: `.gitattributes` (`* text=auto eol=lf`) added and the working copies converted to LF.
+  Git already stored these files as LF, so there is no noisy commit.
 - [ ] **Shrink the PWA icons.** The 512 px PNGs are ~300 KB each and the precache grew from ~330 KB to ~1 MB.
   Try palette/quantised PNG compression and compare the result visually.
 - [ ] **Add CI.** A GitHub Actions workflow running `npm run lint`, `npm test` and `npm run build` on each push.

@@ -7,22 +7,15 @@ export function HeaderBanner({
   startDelayBars,
   delayBarsElapsed,
   automationMode,
-  gradualStep,
-  gradualInterval,
+  trainer,
   isSprintPhase,
   unitsElapsed,
-  sprintType,
-  sprintBars,
-  sprintUnits,
-  jogBars,
-  jogUnits,
   isSpeedCapReached,
   isMutePhase,
-  muteBarsPlay,
-  muteBarsSilent,
   activeSongMap,
   currentSectionIndex
 }) {
+  const { gradualStep, gradualInterval, sprintType, sprintBars, sprintUnits, jogBars, jogUnits, muteBarsPlay, muteBarsSilent } = trainer;
   const currentSection = activeSongMap?.sections?.[currentSectionIndex];
 
   return (
