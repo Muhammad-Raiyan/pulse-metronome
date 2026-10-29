@@ -9,6 +9,8 @@ const SHORTCUTS = [
   { keys: ['Shift', '↓'], action: 'Tempo -4' },
   { keys: ['Alt', '↑'], action: 'Tempo +8' },
   { keys: ['Alt', '↓'], action: 'Tempo -8' },
+  { keys: ['←'], action: 'Subdivision -1' },
+  { keys: ['→'], action: 'Subdivision +1' },
   { keys: ['T'], action: 'Tap tempo' }
 ];
 

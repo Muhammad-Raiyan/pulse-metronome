@@ -11,7 +11,7 @@ import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
 import { ShortcutsPanel } from './ShortcutsPanel';
-import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
+import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, SUBDIVISION_OPTIONS, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
 // Debug UI is only downloaded when debug mode is switched on
 const DebugPanel = lazy(() => import('./DebugPanel').then((m) => ({ default: m.DebugPanel })));
@@ -343,6 +343,15 @@ export function Metronome() {
         const step = e.altKey ? 8 : e.shiftKey ? 4 : 1;
         const delta = e.code === 'ArrowUp' ? step : -step;
         setBpm((b) => Math.min(MAX_BPM, Math.max(MIN_BPM, b + delta)));
+      } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+        e.preventDefault();
+        // Sprint's subdivision burst drives the subdivision itself, so the keys do nothing then
+        const s = stateRef.current;
+        const locked = s.automationMode === AUTOMATION_MODES.JOG_SPRINT && s.sprintType === SPRINT_STRATEGIES.SUBDIVISION;
+        if (!e.repeat && !locked) {
+          const delta = e.code === 'ArrowRight' ? 1 : -1;
+          setSubdivision((v) => Math.min(SUBDIVISION_OPTIONS.length, Math.max(1, v + delta)));
+        }
       } else if (e.code === 'KeyT') {
         e.preventDefault();
         if (!e.repeat) handleTapTempo();
