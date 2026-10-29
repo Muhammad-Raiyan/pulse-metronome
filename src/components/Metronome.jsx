@@ -1,19 +1,21 @@
 // src/components/Metronome.jsx
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { Activity, ExternalLink } from 'lucide-react';
 import { AudioEngine } from '../audio/AudioEngine';
 import { advanceAutomation } from '../audio/automation';
-import { DebugPanel } from './DebugPanel';
 import { DEBUG_ENABLED, saveDebugPreference } from '../debug';
 import { HeaderBanner } from './HeaderBanner';
 import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
+import { ShortcutsPanel } from './ShortcutsPanel';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
-// Stats are only collected in debug mode (?debug); otherwise the engine records nothing.
+// Debug UI is only downloaded when debug mode is switched on
+const DebugPanel = lazy(() => import('./DebugPanel').then((m) => ({ default: m.DebugPanel })));
+
 export function Metronome() {
   // --- Core Metronome Configuration ---
   const [isPlaying, setIsPlaying] = useState(false);
@@ -30,7 +32,7 @@ export function Metronome() {
   // Per-beat Accents Array (default: [Accented, Normal, Normal, Normal])
   const [beatAccents, setBeatAccents] = useState([0, 1, 1, 1]);
 
-  // Fixed warning #2: Helper to handle beatsPerBar change & state update together without setState in useEffect
+  // Change the meter and resize the accent pattern in one step (no setState inside an effect)
   const handleBeatsPerBarChange = useCallback((newBeats) => {
     setBeatsPerBar(newBeats);
     setBeatAccents((prev) => {
@@ -336,14 +338,11 @@ export function Metronome() {
       if (e.code === 'Space') {
         e.preventDefault();
         if (!e.repeat) togglePlay();
-      } else if (e.code === 'ArrowUp') {
+      } else if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
         e.preventDefault();
-        const delta = e.altKey ? 8 : e.shiftKey ? 4 : 1;
-        setBpm((b) => Math.min(MAX_BPM, b + delta));
-      } else if (e.code === 'ArrowDown') {
-        e.preventDefault();
-        const delta = e.altKey ? 8 : e.shiftKey ? 4 : 1;
-        setBpm((b) => Math.max(MIN_BPM, b - delta));
+        const step = e.altKey ? 8 : e.shiftKey ? 4 : 1;
+        const delta = e.code === 'ArrowUp' ? step : -step;
+        setBpm((b) => Math.min(MAX_BPM, Math.max(MIN_BPM, b + delta)));
       } else if (e.code === 'KeyT') {
         e.preventDefault();
         if (!e.repeat) handleTapTempo();
@@ -370,9 +369,11 @@ export function Metronome() {
 
     if (song.sections && song.sections.length > 0) {
       const firstSec = song.sections[0];
-      setBpm(clampBpm(firstSec.bpm || song.bpm || 120));
-      if (firstSec.beatsPerBar) handleBeatsPerBarChange(firstSec.beatsPerBar);
-      setSubdivision(firstSec.subdivision || song.subdivision || 1);
+      applySection({
+        bpm: firstSec.bpm || song.bpm || 120,
+        beatsPerBar: firstSec.beatsPerBar,
+        subdivision: firstSec.subdivision || song.subdivision
+      });
       setAutomationMode(AUTOMATION_MODES.SONG_MAP);
     } else {
       if (song.bpm) setBpm(clampBpm(song.bpm));
@@ -394,7 +395,10 @@ export function Metronome() {
 
   return (
     <div className="min-h-dvh bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 md:p-6 font-sans">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="max-w-[88rem] w-full flex items-start justify-center gap-6">
+      <ShortcutsPanel />
+
+      <div className="flex-1 min-w-0 max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* LEFT COLUMN */}
         <div className="lg:col-span-7 space-y-6">
@@ -454,6 +458,7 @@ export function Metronome() {
         </div>
 
       </div>
+      </div>
 
       <footer className="mt-6 flex items-center justify-center gap-4 text-[11px] text-slate-400">
         <a
@@ -475,7 +480,11 @@ export function Metronome() {
         </button>
       </footer>
 
-      {debugOn && <DebugPanel engineRef={audioEngineRef} isPlaying={isPlaying} />}
+      {debugOn && (
+        <Suspense fallback={null}>
+          <DebugPanel engineRef={audioEngineRef} isPlaying={isPlaying} />
+        </Suspense>
+      )}
     </div>
   );
 }

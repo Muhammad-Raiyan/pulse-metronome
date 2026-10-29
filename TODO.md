@@ -9,12 +9,12 @@ Engineering clean-up and follow-ups. Line counts are rough estimates from a code
   `trainer` instead of 9 separate props, and `stateRef` spreads the object. Still to do: check Ramp, Sprint (both
   strategies), Mute and Song Map by hand in the browser, since `automation.test.js` does not cover the React wiring.
 
-- [ ] **Lazy-load the debug panel** (`React.lazy` + `Suspense`) so ~440 lines of debug UI and stats code stay
-  out of the normal bundle. Optional: trim the tick strip and the "slowest five" list.
-- [ ] **Small cleanups in `Metronome.jsx`.**
-  - `handleSelectSong` repeats what `applySection` already does for the first section.
-  - The ArrowUp and ArrowDown branches of the key handler are near-duplicates.
-  - Stale comments: "Fixed warning #2", and the orphaned "Stats are only collected in debug mode" line above the component.
+- [x] **Lazy-load the debug panel.** Done: `DebugPanel` is a separate 7.9 kB chunk (`React.lazy` + `Suspense`), fetched only when debug is on.
+  `accuracyStats.js` (~190 lines) still ships in the main bundle because `AudioEngine` imports it; loading it on demand is possible but adds an async step to the engine.
+  Optional: trim the tick strip and the "slowest five" list.
+
+- [x] **Small cleanups in `Metronome.jsx`.** Done: `handleSelectSong` reuses `applySection` for the first section, the
+  ArrowUp/ArrowDown branches are merged, and the stale comments are removed.
 
 ## Repository and tooling
 

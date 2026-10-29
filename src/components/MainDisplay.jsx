@@ -1,5 +1,9 @@
 import { Plus, Minus, Hand, VolumeX } from 'lucide-react';
-import { ACCENT_TYPES, ACCENT_LABELS } from '../constants';
+import { ACCENT_TYPES, ACCENT_LABELS, clampBpm } from '../constants';
+
+// Quick tempo steps, nearest to the middle first
+const QUICK_STEPS = [4, 8, 12, 16];
+const QUICK_BTN = 'flex-1 sm:flex-none min-w-0 sm:px-3 px-0 py-1 text-[13px] leading-[18px] bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition';
 
 export function MainDisplay({
   bpm,
@@ -93,17 +97,19 @@ export function MainDisplay({
           </button>
         </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex gap-1.5">
-            <button onClick={() => setBpm(b => Math.max(30, b - 8))} aria-label="Decrease BPM by 8" className="px-2.5 py-1 text-xs bg-slate-800 rounded-lg text-slate-300">-8</button>
-            <button onClick={() => setBpm(b => Math.max(30, b - 4))} aria-label="Decrease BPM by 4" className="px-2.5 py-1 text-xs bg-slate-800 rounded-lg text-slate-300">-4</button>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-1 sm:flex-none gap-1 sm:gap-1.5 order-1">
+            {[...QUICK_STEPS].reverse().map((n) => (
+              <button key={n} onClick={() => setBpm((b) => clampBpm(b - n))} aria-label={`Decrease BPM by ${n}`} className={QUICK_BTN}>-{n}</button>
+            ))}
           </div>
-          <button onClick={handleTapTempo} className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-400 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+          <button onClick={handleTapTempo} className="order-3 w-full sm:w-auto sm:order-2 px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-cyan-500/20 text-cyan-400 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700">
             <Hand className="w-3.5 h-3.5" /> Tap Tempo
           </button>
-          <div className="flex gap-1.5">
-            <button onClick={() => setBpm(b => Math.min(300, b + 4))} aria-label="Increase BPM by 4" className="px-2.5 py-1 text-xs bg-slate-800 rounded-lg text-slate-300">+4</button>
-            <button onClick={() => setBpm(b => Math.min(300, b + 8))} aria-label="Increase BPM by 8" className="px-2.5 py-1 text-xs bg-slate-800 rounded-lg text-slate-300">+8</button>
+          <div className="flex flex-1 sm:flex-none gap-1 sm:gap-1.5 order-2 sm:order-3">
+            {QUICK_STEPS.map((n) => (
+              <button key={n} onClick={() => setBpm((b) => clampBpm(b + n))} aria-label={`Increase BPM by ${n}`} className={QUICK_BTN}>+{n}</button>
+            ))}
           </div>
         </div>
       </div>
