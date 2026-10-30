@@ -15,9 +15,9 @@ Open work first, finished work in **Completed** at the bottom. Line counts are r
 ## Repository and tooling
 - [ ] **Shrink the PWA icons.** The 512 px PNGs are ~300 KB each and the precache grew from ~330 KB to ~1 MB.
   Try palette/quantised PNG compression and compare the result visually.
-- [ ] **Deploy from the workflow (optional).** CI exists (see Completed) but `npm run deploy` (`gh-pages`) is still how the site is published.
-  A Pages deploy job could replace the `gh-pages` dependency; it needs Pages set to `GitHub Actions` as the source in the repo settings.
-- [ ] **Confirm the first CI run is green** on GitHub (the workflow has not run yet).
+- [ ] **Switch the repo to the new deploy and check it.** The workflow now has a `deploy` job, but Pages must be set to
+  **Settings → Pages → Source: GitHub Actions** (it is probably still `Deploy from a branch`). Push to `main`, confirm the site
+  updates, then optionally drop the `gh-pages` dependency and the `deploy`/`predeploy` scripts (kept for now as a fallback).
 - [ ] **Note the icon steps in the README.** `design/app-icon-source.jpg` is the icon source (not shipped, outside `public/`);
   document how the PNGs in `public/` are generated from it.
 
@@ -107,7 +107,10 @@ Open questions:
 ## Completed
 
 - [x] **CI workflow** (`.github/workflows/ci.yml`): on push to `main` and on pull requests it runs `npm ci`, lint, test, build and `npm audit --audit-level=high`.
-  Read-only token permissions, Node 24, npm cache, a 10-minute timeout, and older runs of the same branch are cancelled.
+  Read-only token permissions, Node 24, npm cache, a 10-minute timeout, and older runs of the same branch are cancelled. First run on GitHub was green.
+
+- [x] **Deploy job** in the same workflow: after the checks pass on a push to `main`, `dist/` is uploaded and published with
+  `actions/upload-pages-artifact` + `actions/deploy-pages`. Only that job gets `pages: write` and `id-token: write`; pull requests never deploy.
 - [x] **Settings object for the trainers.** The 15 Ramp/Sprint/Mute settings live in one `trainer` object (`DEFAULT_TRAINER` in
   `constants.js`), changed with `updateTrainer(key, value)`. `AutomationEngine` takes 5 props instead of 36, `HeaderBanner`
   takes `trainer` instead of 9 props, and `stateRef` spreads the object.

@@ -30,7 +30,7 @@ A zero-lag, production-ready Progressive Web Application (PWA) metronome built f
 - **Icons**: Lucide React
 - **Audio Engine**: Web Audio API (`AudioContext`) + Web Worker scheduler (`schedulerWorker.js`)
 - **PWA**: `vite-plugin-pwa`
-- **Deployment**: GitHub Pages (`gh-pages`)
+- **Deployment**: GitHub Pages, published by a GitHub Actions workflow
 
 ---
 
@@ -105,19 +105,21 @@ export default defineConfig({
 });
 ```
 
-### 2. Deploy to GitHub Pages
-Run the deploy script from your terminal:
+### 2. Enable GitHub Pages once in Repo Settings
+1. Navigate to `https://github.com/Muhammad-Raiyan/pulse-metronome`.
+2. Go to **Settings** $\rightarrow$ **Pages**.
+3. Under **Build and deployment**, set **Source** to `GitHub Actions`.
+
+### 3. Push to `main`
+The workflow in `.github/workflows/ci.yml` lints, tests and builds the app. If those pass, a second job publishes `dist/` to GitHub Pages. Pull requests run the checks but are never deployed.
+
+Fallback from your own machine (publishes to the `gh-pages` branch, which only works while **Source** is `Deploy from a branch`):
 
 ```bash
 npm run deploy
 ```
-This automatically compiles the production bundle in `dist/` and pushes it to your repository's `gh-pages` branch.
 
-### 3. Enable GitHub Pages in Repo Settings
-1. Navigate to `https://github.com/Muhammad-Raiyan/pulse-metronome`.
-2. Go to **Settings** $\rightarrow$ **Pages**.
-3. Under **Build and deployment**, set **Source** to `Deploy from a branch` and select `gh-pages` / `/ (root)`.
-4. Save. Your app will be live at `https://muhammad-raiyan.github.io/pulse-metronome/`.
+The app is live at `https://muhammad-raiyan.github.io/pulse-metronome/`.
 
 ---
 

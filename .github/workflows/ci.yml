@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
 
-# The workflow only reads the repository
+# The workflow only reads the repository; the deploy job asks for more below
 permissions:
   contents: read
 
@@ -40,3 +40,31 @@ jobs:
       # Fails only on high/critical advisories; the known low-severity ones (deepmerge via vite-plugin-pwa) are tolerated
       - name: Audit dependencies
         run: npm audit --audit-level=high
+
+      # Only pushes to main are published; pull requests stop after the checks above
+      - name: Upload site for GitHub Pages
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Publishing needs these two extra permissions, and only this job gets them
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Never cancel a deployment half-way; a newer one waits its turn
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
