@@ -10,6 +10,8 @@ import { MainDisplay } from './MainDisplay';
 import { MetronomeControls } from './MetronomeControls';
 import { AutomationEngine } from './AutomationEngine';
 import { SongMapLoader } from './SongMapLoader';
+import { SequenceEditor } from './SequenceEditor';
+import { songToSequence, newSequence } from '../sequence';
 import { ShortcutsPanel } from './ShortcutsPanel';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, SUBDIVISION_OPTIONS, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
@@ -371,24 +373,15 @@ export function Metronome() {
     };
   }, [togglePlay, handleTapTempo]);
 
+  // Picking a library song loads an editable copy of it as the sequence (the library entry
+  // itself is never changed), and switches to the Song tab to show its steps.
   const handleSelectSong = (song) => {
-    setActiveSongMap(song);
+    const sequence = songToSequence(song);
+    setActiveSongMap(sequence);
     setCurrentSectionIndex(0);
     setUnitsElapsed(0);
-
-    if (song.sections && song.sections.length > 0) {
-      const firstSec = song.sections[0];
-      applySection({
-        bpm: firstSec.bpm || song.bpm || 120,
-        beatsPerBar: firstSec.beatsPerBar,
-        subdivision: firstSec.subdivision || song.subdivision
-      });
-      setAutomationMode(AUTOMATION_MODES.SONG_MAP);
-    } else {
-      if (song.bpm) setBpm(clampBpm(song.bpm));
-      if (song.beatsPerBar) handleBeatsPerBarChange(song.beatsPerBar);
-      if (song.subdivision) setSubdivision(song.subdivision);
-    }
+    applySection(sequence.sections[0]);
+    setAutomationMode(AUTOMATION_MODES.SONG_MAP);
 
     if (song.beatAccents && Array.isArray(song.beatAccents)) {
       const validAccents = Object.values(ACCENT_TYPES);
@@ -400,6 +393,22 @@ export function Metronome() {
     if (isPlaying) {
       stopPlayback(false);
     }
+  };
+
+  const handleNewSequence = () => {
+    if (isPlaying) stopPlayback(false);
+    const seq = newSequence({ bpm, beatsPerBar, subdivision });
+    setActiveSongMap(seq);
+    setCurrentSectionIndex(0);
+    setUnitsElapsed(0);
+    setAutomationMode(AUTOMATION_MODES.SONG_MAP);
+  };
+
+  // The editor is locked while playing, so a change always happens at rest
+  const handleSequenceChange = (sections) => {
+    setActiveSongMap((prev) => ({ ...prev, sections }));
+    setCurrentSectionIndex(0);
+    applySection(sections[0]);
   };
 
   return (
@@ -462,6 +471,18 @@ export function Metronome() {
             onTrainerChange={updateTrainer}
             activeSongMap={activeSongMap}
           />
+
+          {automationMode === AUTOMATION_MODES.SONG_MAP && (
+            <SequenceEditor
+              activeSongMap={activeSongMap}
+              currentSectionIndex={currentSectionIndex}
+              unitsElapsed={unitsElapsed}
+              isDelayPhase={isDelayPhase}
+              isPlaying={isPlaying}
+              onNew={handleNewSequence}
+              onChange={handleSequenceChange}
+            />
+          )}
 
           <SongMapLoader onSelectSong={handleSelectSong} />
         </div>

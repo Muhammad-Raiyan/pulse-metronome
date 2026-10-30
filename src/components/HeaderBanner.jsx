@@ -57,7 +57,7 @@ export function HeaderBanner({
               : <><Volume2 className="w-3.5 h-3.5 text-cyan-400" /> 🔊 MUTE TRAINER (PLAYING)</>
           )}
           {!isDelayPhase && automationMode === AUTOMATION_MODES.SONG_MAP && (
-            <><Music className="w-3.5 h-3.5 text-cyan-400" /> {activeSongMap ? `${activeSongMap.title}${currentSection ? ` - ${currentSection.name || 'Section'}` : ''}` : 'Song mode: pick a song'}</>
+            <><Music className="w-3.5 h-3.5 text-cyan-400" /> {activeSongMap ? `${activeSongMap.title}${currentSection ? ` - ${currentSection.name || (activeSongMap.editable ? `Step ${currentSectionIndex + 1}/${activeSongMap.sections.length}` : 'Section')}` : ''}` : 'Song mode: pick a song'}</>
           )}
         </span>
       </span>
