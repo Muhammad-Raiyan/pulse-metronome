@@ -124,3 +124,4 @@ Open questions:
 - [x] **App icon** replaced with the new artwork (PNG icons, maskable icon, Apple touch icon and favicon) from `design/app-icon-source.jpg`.
 - [x] **Desktop shortcuts panel** and left/right arrow keys for subdivision.
 - [x] **Quick tempo buttons** now ±4, ±8, ±12 and ±16, about 8% larger.
+
