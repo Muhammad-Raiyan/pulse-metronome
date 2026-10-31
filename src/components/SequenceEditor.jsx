@@ -1,4 +1,4 @@
-import { Plus, Copy, Trash2, ChevronUp, ChevronDown, FilePlus2 } from 'lucide-react';
+import { Plus, Copy, Trash2, ChevronUp, ChevronDown, FilePlus2, PlayCircle, Repeat } from 'lucide-react';
 import { NumberInput } from './NumberInput';
 import { Select } from './Select';
 import { MIN_BPM, MAX_BPM, SUBDIVISION_OPTIONS, ACCENT_TYPES, ACCENT_LABELS } from '../constants';
@@ -9,7 +9,7 @@ import {
 import { CARD, INPUT } from './styles';
 
 const METERS = Array.from({ length: MAX_METER }, (_, i) => i + 1);
-const COLUMNS = 'grid grid-cols-[1.25rem_minmax(0,1fr)_3rem_3rem_3.5rem_minmax(0,1fr)_minmax(0,1fr)_6.5rem] gap-1.5 items-center';
+const COLUMNS = 'grid grid-cols-[2.75rem_minmax(0,1fr)_3rem_3rem_3.5rem_minmax(0,1fr)_minmax(0,1fr)_5.5rem] gap-1.5 items-center';
 // Sequence editor fields focus-ring uses purple instead of cyan
 const FIELD = `${INPUT} px-1.5 focus:border-purple-500`;
 const SELECT = `${FIELD} pr-6 pl-1.5`;
@@ -41,7 +41,7 @@ function ActionButton({ onClick, Icon, children }) {
 }
 
 // Song-tab tools: start a new sequence and edit the steps of the loaded song. The list is locked while playing so a step can't change under the audio.
-export function SequenceEditor({ activeSongMap, currentSectionIndex, repeatElapsed, unitsElapsed, isDelayPhase, isPlaying, onNew, onChange }) {
+export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectionIndex, loopSection, repeatElapsed, unitsElapsed, isDelayPhase, isPlaying, onNew, onChange, onSetStart, onSetLoop, onClearStart }) {
   const editable = Boolean(activeSongMap?.editable);
   const steps = activeSongMap?.sections ?? [];
   const totalBars = steps.reduce((sum, s) => sum + s.bars, 0);
@@ -59,7 +59,18 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, repeatElaps
 
           {steps.length > 0 && (
             <div className={`${COLUMNS} px-1.5 text-[11px] text-slate-400`} aria-hidden="true">
-              <span>#</span><span>Name</span><span>Bars</span><span>×</span><span>BPM</span><span>Meter</span><span>Subdiv</span><span />
+              <span></span><span>Name</span><span>Bars</span><span>×</span><span>BPM</span><span>Meter</span><span>Subdiv</span><span />
+            </div>
+          )}
+
+          {/* Start / loop indicator */}
+          {(startSectionIndex > 0 || loopSection) && !isPlaying && (
+            <div className="flex items-center gap-2 px-1.5 text-[11px]">
+              <span className={`flex items-center gap-1 ${loopSection ? 'text-amber-400' : 'text-emerald-400'}`}>
+                {loopSection ? <Repeat className="w-3 h-3" /> : <PlayCircle className="w-3 h-3" />}
+                {loopSection ? `Looping section ${startSectionIndex + 1}` : `Starting from section ${startSectionIndex + 1}`}
+              </span>
+              <button onClick={onClearStart} className="text-slate-500 hover:text-slate-300 underline cursor-pointer">clear</button>
             </div>
           )}
 
@@ -88,7 +99,23 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, repeatElaps
                   )}
                   {/* Main fields row */}
                   <div className={`${COLUMNS} p-1.5`}>
-                    <span className="text-[11px] font-mono text-slate-400">{n}</span>
+                    {/* Start / loop buttons — left cell */}
+                    <div className="flex items-center gap-0.5">
+                      <IconButton
+                        label={`Start from section ${n}`}
+                        disabled={isPlaying}
+                        onClick={() => startSectionIndex === i && !loopSection ? onClearStart() : onSetStart(i)}
+                      >
+                        <PlayCircle className={`w-3.5 h-3.5 ${startSectionIndex === i && !loopSection ? 'text-emerald-400' : ''}`} />
+                      </IconButton>
+                      <IconButton
+                        label={`Loop section ${n}`}
+                        disabled={isPlaying}
+                        onClick={() => startSectionIndex === i && loopSection ? onClearStart() : onSetLoop(i)}
+                      >
+                        <Repeat className={`w-3.5 h-3.5 ${startSectionIndex === i && loopSection ? 'text-amber-400' : ''}`} />
+                      </IconButton>
+                    </div>
                     <input
                       type="text"
                       value={step.name}
@@ -142,6 +169,8 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, repeatElaps
                       <IconButton label={`Remove step ${n}`} disabled={isPlaying} onClick={() => onChange(removeStep(steps, i))}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </IconButton>
+                      {/* Step number — bottom right */}
+                      <span className="text-[10px] font-mono text-slate-600 pl-0.5 select-none">{n}</span>
                     </div>
                   </div>
                   {/* Per-step accent strip */}

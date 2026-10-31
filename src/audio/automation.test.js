@@ -169,6 +169,47 @@ test('out-of-range song tempos are clamped', () => {
   assert.equal(s.bpm, MAX_BPM);
 });
 
+test('song map loopSection: stays on the same section indefinitely, no advance', () => {
+  const s = base({
+    automationMode: AUTOMATION_MODES.SONG_MAP,
+    activeSongMap: songMap,
+    loopSection: true,
+    currentSectionIndex: 0,
+  });
+  // Run section 0 (2 bars) twice — should never advance to section 1
+  advanceAutomation(s, 'bar');
+  const end1 = advanceAutomation(s, 'bar');
+  assert.equal(end1.currentSectionIndex, undefined);
+  assert.equal(end1.repeatElapsed, 0);
+  assert.equal(end1.songComplete, undefined);
+  advanceAutomation(s, 'bar');
+  const end2 = advanceAutomation(s, 'bar');
+  assert.equal(end2.currentSectionIndex, undefined);
+  assert.equal(s.currentSectionIndex, 0); // still on section 0
+});
+
+test('song map startSectionIndex: loops back to startSectionIndex instead of 0', () => {
+  const map = {
+    sections: [
+      { bars: 1, bpm: 100, beatsPerBar: 4, subdivision: 1 },
+      { bars: 1, bpm: 120, beatsPerBar: 4, subdivision: 1 },
+      { bars: 1, bpm: 140, beatsPerBar: 4, subdivision: 1 },
+    ],
+  };
+  const s = base({
+    automationMode: AUTOMATION_MODES.SONG_MAP,
+    activeSongMap: map,
+    currentSectionIndex: 2,
+    startSectionIndex: 1,
+    bpm: 140,
+  });
+  // Finish section 2 (last) — should loop to startSectionIndex 1, not 0
+  const patch = advanceAutomation(s, 'bar');
+  assert.equal(patch.currentSectionIndex, 1);
+  assert.equal(patch.songComplete, true);
+  assert.equal(s.bpm, 120);
+});
+
 test('song map repeats: stays on section until all repeats exhausted, no songComplete mid-repeat', () => {
   const map = { sections: [{ bars: 2, bpm: 100, beatsPerBar: 4, subdivision: 1, repeats: 3 }] };
   const s = base({ automationMode: AUTOMATION_MODES.SONG_MAP, activeSongMap: map });

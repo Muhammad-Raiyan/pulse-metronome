@@ -94,6 +94,8 @@ export function Metronome() {
   // --- Song Map State ---
   const [repeatElapsed, setRepeatElapsed] = useState(0);
   const [songComplete, setSongComplete] = useState(false);
+  const [startSectionIndex, setStartSectionIndex] = useState(0);
+  const [loopSection, setLoopSection] = useState(false);
 
   // --- References ---
   const audioEngineRef = useRef(null);
@@ -127,6 +129,8 @@ export function Metronome() {
       isMutePhase,
       activeSongMap,
       currentSectionIndex,
+      startSectionIndex,
+      loopSection,
       repeatElapsed,
     };
   });
@@ -247,7 +251,7 @@ export function Metronome() {
       } else if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
         setBpm(clampBpm(jogBpm));
       } else if (automationMode === AUTOMATION_MODES.SONG_MAP) {
-        applySection(activeSongMap?.sections?.[0]);
+        applySection(activeSongMap?.sections?.[startSectionIndex]);
       }
     }
     rampStartBpmRef.current = null;
@@ -257,7 +261,7 @@ export function Metronome() {
     setIsMutePhase(false);
     setUnitsElapsed(0);
     setDelayBarsElapsed(0);
-    setCurrentSectionIndex(0);
+    setCurrentSectionIndex(startSectionIndex);
     setRepeatElapsed(0);
     setSongComplete(false);
     setActiveBeat({ beat: 0, sub: 0 });
@@ -284,7 +288,7 @@ export function Metronome() {
 
       setUnitsElapsed(0);
       setDelayBarsElapsed(0);
-      setCurrentSectionIndex(0);
+      setCurrentSectionIndex(startSectionIndex);
       setIsSprintPhase(false);
       setIsMutePhase(false);
 
@@ -298,14 +302,14 @@ export function Metronome() {
       if (automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.BPM) {
         setBpm(clampBpm(jogBpm));
       } else if (automationMode === AUTOMATION_MODES.SONG_MAP) {
-        applySection(activeSongMap?.sections?.[0]);
+        applySection(activeSongMap?.sections?.[startSectionIndex]);
       }
 
       audioEngineRef.current.start();
       workerRef.current.postMessage({ command: 'start' });
       setIsPlaying(true);
     }
-  }, [isPlaying, stopPlayback, startDelayBars, automationMode, sprintType, jogBpm, activeSongMap, applySection]);
+  }, [isPlaying, stopPlayback, startDelayBars, automationMode, sprintType, jogBpm, activeSongMap, applySection, startSectionIndex]);
 
   // Switching mode must not carry phase state (silent bar, sprint bell, counters) over
   const handleModeChange = (mode) => {
@@ -406,6 +410,8 @@ export function Metronome() {
     const sequence = songToSequence(song);
     setActiveSongMap(sequence);
     setCurrentSectionIndex(0);
+    setStartSectionIndex(0);
+    setLoopSection(false);
     setUnitsElapsed(0);
     applySection(sequence.sections[0]);
     setAutomationMode(AUTOMATION_MODES.SONG_MAP);
@@ -427,6 +433,8 @@ export function Metronome() {
     const seq = newSequence({ bpm, beatsPerBar, subdivision });
     setActiveSongMap(seq);
     setCurrentSectionIndex(0);
+    setStartSectionIndex(0);
+    setLoopSection(false);
     setUnitsElapsed(0);
     setAutomationMode(AUTOMATION_MODES.SONG_MAP);
   };
@@ -499,12 +507,17 @@ export function Metronome() {
             <SequenceEditor
               activeSongMap={activeSongMap}
               currentSectionIndex={currentSectionIndex}
+              startSectionIndex={startSectionIndex}
+              loopSection={loopSection}
               repeatElapsed={repeatElapsed}
               unitsElapsed={unitsElapsed}
               isDelayPhase={isDelayPhase}
               isPlaying={isPlaying}
               onNew={handleNewSequence}
               onChange={handleSequenceChange}
+              onSetStart={(i) => { setStartSectionIndex(i); setLoopSection(false); }}
+              onSetLoop={(i) => { setStartSectionIndex(i); setLoopSection(true); }}
+              onClearStart={() => { setStartSectionIndex(0); setLoopSection(false); }}
             />
           )}
         </div>
