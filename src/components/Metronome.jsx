@@ -342,18 +342,29 @@ export function Metronome() {
         if (!e.repeat) togglePlay();
       } else if (e.code === 'ArrowUp' || e.code === 'ArrowDown') {
         e.preventDefault();
-        const step = e.altKey ? 8 : e.shiftKey ? 4 : 1;
-        const delta = e.code === 'ArrowUp' ? step : -step;
-        setBpm((b) => Math.min(MAX_BPM, Math.max(MIN_BPM, b + delta)));
+        if (e.shiftKey) {
+          if (!e.repeat) {
+            const beatsOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12];
+            const cur = stateRef.current.beatsPerBar;
+            const idx = beatsOptions.indexOf(cur);
+            const next = e.code === 'ArrowUp' ? idx + 1 : idx - 1;
+            const clamped = beatsOptions[Math.min(beatsOptions.length - 1, Math.max(0, next))];
+            if (clamped !== undefined) handleBeatsPerBarChange(clamped);
+          }
+        } else {
+          // Sprint's subdivision burst drives the subdivision itself, so the keys do nothing then
+          const s = stateRef.current;
+          const locked = s.automationMode === AUTOMATION_MODES.JOG_SPRINT && s.sprintType === SPRINT_STRATEGIES.SUBDIVISION;
+          if (!e.repeat && !locked) {
+            const delta = e.code === 'ArrowUp' ? 1 : -1;
+            setSubdivision((v) => Math.min(SUBDIVISION_OPTIONS.length, Math.max(1, v + delta)));
+          }
+        }
       } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
         e.preventDefault();
-        // Sprint's subdivision burst drives the subdivision itself, so the keys do nothing then
-        const s = stateRef.current;
-        const locked = s.automationMode === AUTOMATION_MODES.JOG_SPRINT && s.sprintType === SPRINT_STRATEGIES.SUBDIVISION;
-        if (!e.repeat && !locked) {
-          const delta = e.code === 'ArrowRight' ? 1 : -1;
-          setSubdivision((v) => Math.min(SUBDIVISION_OPTIONS.length, Math.max(1, v + delta)));
-        }
+        const step = e.altKey ? 1 : e.shiftKey ? 8 : 4;
+        const delta = e.code === 'ArrowRight' ? step : -step;
+        setBpm((b) => Math.min(MAX_BPM, Math.max(MIN_BPM, b + delta)));
       } else if (e.code === 'KeyT') {
         e.preventDefault();
         if (!e.repeat) handleTapTempo();
@@ -371,7 +382,7 @@ export function Metronome() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [togglePlay, handleTapTempo]);
+  }, [togglePlay, handleTapTempo, handleBeatsPerBarChange]);
 
   // Picking a library song loads an editable copy of it as the sequence (the library entry
   // itself is never changed), and switches to the Song tab to show its steps.

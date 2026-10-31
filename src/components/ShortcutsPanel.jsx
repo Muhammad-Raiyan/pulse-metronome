@@ -4,10 +4,11 @@ import { Keyboard } from 'lucide-react';
 // Must match the key handler in Metronome.jsx
 const SHORTCUTS = [
   { action: 'Start / stop', keys: ['Space'] },
-  { action: 'Tempo +1 / -1', keys: ['↑', '↓'] },
-  { action: 'Tempo +4 / -4', mod: 'Shift', keys: ['↑', '↓'] },
-  { action: 'Tempo +8 / -8', mod: 'Alt', keys: ['↑', '↓'] },
-  { action: 'Subdivision +1 / -1', keys: ['→', '←'] },
+  { action: 'Subdivision +1 / -1', keys: ['↑', '↓'] },
+  { action: 'Time signature +1 / -1', mod: 'Shift', keys: ['↑', '↓'] },
+  { action: 'Tempo +4 / -4', keys: ['→', '←'] },
+  { action: 'Tempo +8 / -8', mod: 'Shift', keys: ['→', '←'] },
+  { action: 'Tempo +1 / -1', mod: 'Alt', keys: ['→', '←'] },
   { action: 'Tap tempo', keys: ['T'] }
 ];
 
