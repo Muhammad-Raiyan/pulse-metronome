@@ -98,15 +98,30 @@ export function advanceAutomation(s, type) {
     if (currentSection) {
       const nextBars = s.unitsElapsed + 1;
       if (nextBars >= currentSection.bars) {
-        const nextIndex = s.currentSectionIndex + 1 < sections.length ? s.currentSectionIndex + 1 : 0;
-        const sec = sections[nextIndex];
-        s.currentSectionIndex = nextIndex;
-        patch.currentSectionIndex = nextIndex;
-        patch.section = sec;
-        if (sec.bpm) s.bpm = clampBpm(sec.bpm);
-        if (sec.beatsPerBar) s.beatsPerBar = sec.beatsPerBar;
-        s.subdivision = sec.subdivision || 1;
-        setUnits(0);
+        // Finished one pass through this section — check if more repeats remain
+        const repeats = currentSection.repeats ?? 1;
+        const nextRepeat = (s.repeatElapsed ?? 0) + 1;
+        if (nextRepeat < repeats) {
+          // Stay on this section, start another repeat
+          s.repeatElapsed = nextRepeat;
+          patch.repeatElapsed = nextRepeat;
+          setUnits(0);
+        } else {
+          // All repeats done — move to the next section
+          const lastSection = s.currentSectionIndex === sections.length - 1;
+          const nextIndex = lastSection ? 0 : s.currentSectionIndex + 1;
+          const sec = sections[nextIndex];
+          s.currentSectionIndex = nextIndex;
+          patch.currentSectionIndex = nextIndex;
+          s.repeatElapsed = 0;
+          patch.repeatElapsed = 0;
+          if (lastSection) patch.songComplete = true;
+          patch.section = sec;
+          if (sec.bpm) s.bpm = clampBpm(sec.bpm);
+          if (sec.beatsPerBar) s.beatsPerBar = sec.beatsPerBar;
+          s.subdivision = sec.subdivision || 1;
+          setUnits(0);
+        }
       } else {
         setUnits(nextBars);
       }

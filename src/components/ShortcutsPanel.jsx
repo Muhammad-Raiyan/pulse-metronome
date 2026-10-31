@@ -1,11 +1,12 @@
 import { Keyboard } from 'lucide-react';
+import { CARD } from './styles';
 
 // `keys` are shown as "a / b" in the same order as the +/- in the action; `mod` is a modifier held with both.
 // Must match the key handler in Metronome.jsx
 const SHORTCUTS = [
   { action: 'Start / stop', keys: ['Space'] },
   { action: 'Subdivision +1 / -1', keys: ['↑', '↓'] },
-  { action: 'Time signature +1 / -1', mod: 'Shift', keys: ['↑', '↓'] },
+  { action: 'Time sig. ±1', mod: 'Shift', keys: ['↑', '↓'] },
   { action: 'Tempo +4 / -4', keys: ['→', '←'] },
   { action: 'Tempo +8 / -8', mod: 'Shift', keys: ['→', '←'] },
   { action: 'Tempo +1 / -1', mod: 'Alt', keys: ['→', '←'] },
@@ -23,7 +24,7 @@ export function ShortcutsPanel() {
   return (
     <aside
       aria-label="Keyboard shortcuts"
-      className="hidden xl:block pointer-coarse:hidden w-64 shrink-0 sticky top-6 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-xl"
+      className={`hidden xl:block pointer-coarse:hidden w-64 shrink-0 sticky top-6 ${CARD}`}
     >
       <div className="flex items-center gap-2 border-b border-slate-800 pb-3 mb-3">
         <Keyboard className="w-4 h-4 text-cyan-400" aria-hidden="true" />

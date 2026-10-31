@@ -1,7 +1,8 @@
 // src/components/Metronome.jsx
 
 import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
-import { Activity, ExternalLink } from 'lucide-react';
+import { Activity, ExternalLink, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../ThemeContext';
 import { AudioEngine } from '../audio/AudioEngine';
 import { advanceAutomation } from '../audio/automation';
 import { DEBUG_ENABLED, saveDebugPreference } from '../debug';
@@ -19,6 +20,8 @@ import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, SUB
 const DebugPanel = lazy(() => import('./DebugPanel').then((m) => ({ default: m.DebugPanel })));
 
 export function Metronome() {
+  const { theme, toggle: toggleTheme } = useTheme();
+
   // --- Core Metronome Configuration ---
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(120);
@@ -58,12 +61,13 @@ export function Metronome() {
     });
   };
 
-  // Apply a song-map section's tempo / meter / subdivision to the live state
+  // Apply a song-map section's tempo / meter / subdivision (and accents) to the live state
   const applySection = useCallback((sec) => {
     if (!sec) return;
     if (sec.bpm) setBpm(clampBpm(sec.bpm));
     if (sec.beatsPerBar) handleBeatsPerBarChange(sec.beatsPerBar);
     setSubdivision(sec.subdivision || 1);
+    if (Array.isArray(sec.beatAccents)) setBeatAccents(sec.beatAccents);
   }, [handleBeatsPerBarChange]);
 
   // --- Count-In Delay Configuration ---
@@ -86,6 +90,10 @@ export function Metronome() {
 
   const [isSprintPhase, setIsSprintPhase] = useState(false);
   const [unitsElapsed, setUnitsElapsed] = useState(0);
+
+  // --- Song Map State ---
+  const [repeatElapsed, setRepeatElapsed] = useState(0);
+  const [songComplete, setSongComplete] = useState(false);
 
   // --- References ---
   const audioEngineRef = useRef(null);
@@ -118,7 +126,8 @@ export function Metronome() {
       isSpeedCapReached,
       isMutePhase,
       activeSongMap,
-      currentSectionIndex
+      currentSectionIndex,
+      repeatElapsed,
     };
   });
 
@@ -135,6 +144,8 @@ export function Metronome() {
     if ('isSprintPhase' in patch) setIsSprintPhase(patch.isSprintPhase);
     if ('isMutePhase' in patch) setIsMutePhase(patch.isMutePhase);
     if ('currentSectionIndex' in patch) setCurrentSectionIndex(patch.currentSectionIndex);
+    if ('repeatElapsed' in patch) setRepeatElapsed(patch.repeatElapsed);
+    if (patch.songComplete) setSongComplete(true);
     if (patch.section) applySection(patch.section);
   };
   const advanceHandlerRef = useRef(handleStateAdvance);
@@ -247,6 +258,8 @@ export function Metronome() {
     setUnitsElapsed(0);
     setDelayBarsElapsed(0);
     setCurrentSectionIndex(0);
+    setRepeatElapsed(0);
+    setSongComplete(false);
     setActiveBeat({ beat: 0, sub: 0 });
   }, [automationMode, sprintType, jogBpm, activeSongMap, applySection]);
 
@@ -301,6 +314,9 @@ export function Metronome() {
     setIsMutePhase(false);
     setUnitsElapsed(0);
     setCurrentSectionIndex(0);
+    setRepeatElapsed(0);
+    setSongComplete(false);
+    setStartDelayBars(mode === AUTOMATION_MODES.MANUAL ? 0 : 1);
   };
 
   const handleTapTempo = useCallback(() => {
@@ -430,7 +446,7 @@ export function Metronome() {
       <div className="flex-1 min-w-0 max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* LEFT COLUMN */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className={`${automationMode === AUTOMATION_MODES.SONG_MAP ? 'lg:col-span-8' : 'lg:col-span-7'} space-y-6`}>
           <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 relative overflow-hidden flex flex-col items-center justify-between min-h-[340px] shadow-2xl">
             <HeaderBanner
               isPlaying={isPlaying}
@@ -445,6 +461,8 @@ export function Metronome() {
               isMutePhase={isMutePhase}
               activeSongMap={activeSongMap}
               currentSectionIndex={currentSectionIndex}
+              repeatElapsed={repeatElapsed}
+              songComplete={songComplete}
             />
 
             <MainDisplay
@@ -457,6 +475,7 @@ export function Metronome() {
               handleTapTempo={handleTapTempo}
               beatAccents={beatAccents}
               toggleBeatAccent={toggleBeatAccent}
+              isSongMap={automationMode === AUTOMATION_MODES.SONG_MAP}
             />
           </div>
 
@@ -470,11 +489,28 @@ export function Metronome() {
             startDelayBars={startDelayBars}
             setStartDelayBars={setStartDelayBars}
             subdivisionLocked={automationMode === AUTOMATION_MODES.JOG_SPRINT && sprintType === SPRINT_STRATEGIES.SUBDIVISION}
+            isSongMap={automationMode === AUTOMATION_MODES.SONG_MAP}
+            activeSongMap={activeSongMap}
+            currentSectionIndex={currentSectionIndex}
+            unitsElapsed={unitsElapsed}
+            isDelayPhase={isDelayPhase}
           />
+          {automationMode === AUTOMATION_MODES.SONG_MAP && !isPlaying && (
+            <SequenceEditor
+              activeSongMap={activeSongMap}
+              currentSectionIndex={currentSectionIndex}
+              repeatElapsed={repeatElapsed}
+              unitsElapsed={unitsElapsed}
+              isDelayPhase={isDelayPhase}
+              isPlaying={isPlaying}
+              onNew={handleNewSequence}
+              onChange={handleSequenceChange}
+            />
+          )}
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className={`${automationMode === AUTOMATION_MODES.SONG_MAP ? 'lg:col-span-4' : 'lg:col-span-5'} space-y-6`}>
           <AutomationEngine
             automationMode={automationMode}
             setAutomationMode={handleModeChange}
@@ -484,18 +520,8 @@ export function Metronome() {
           />
 
           {automationMode === AUTOMATION_MODES.SONG_MAP && (
-            <SequenceEditor
-              activeSongMap={activeSongMap}
-              currentSectionIndex={currentSectionIndex}
-              unitsElapsed={unitsElapsed}
-              isDelayPhase={isDelayPhase}
-              isPlaying={isPlaying}
-              onNew={handleNewSequence}
-              onChange={handleSequenceChange}
-            />
+            <SongMapLoader onSelectSong={handleSelectSong} />
           )}
-
-          <SongMapLoader onSelectSong={handleSelectSong} />
         </div>
 
       </div>
@@ -511,6 +537,14 @@ export function Metronome() {
           <ExternalLink className="w-3 h-3" aria-hidden="true" />
           View source on GitHub
         </a>
+        <button
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+        >
+          {theme === 'dark' ? <Sun className="w-3 h-3" aria-hidden="true" /> : <Moon className="w-3 h-3" aria-hidden="true" />}
+          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        </button>
         <button
           onClick={toggleDebug}
           aria-pressed={debugOn}

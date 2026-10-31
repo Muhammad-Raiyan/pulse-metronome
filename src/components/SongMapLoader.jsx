@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Music, Disc, User, Check, X } from 'lucide-react';
+import { CARD, INPUT } from './styles';
 
 export function SongMapLoader({ onSelectSong }) {
   const [songs, setSongs] = useState([]);
@@ -63,7 +64,7 @@ export function SongMapLoader({ onSelectSong }) {
   };
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4 shadow-xl">
+    <div className={`${CARD} space-y-4`}>
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2">
           <Music className="w-4 h-4 text-cyan-400" />
@@ -80,7 +81,7 @@ export function SongMapLoader({ onSelectSong }) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by song, artist, or album..."
-          className="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-10 pr-9 py-2.5 text-xs text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500 transition-all"
+          className={`${INPUT} rounded-2xl pl-10 pr-9 py-2.5 font-normal placeholder-slate-400 transition-all`}
         />
         {searchTerm && (
           <button

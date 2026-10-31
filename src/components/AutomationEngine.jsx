@@ -9,6 +9,7 @@ import {
   MAX_BPM
 } from '../constants';
 import { Sliders, Zap, Flame, VolumeX, Music2 } from 'lucide-react';
+import { CARD, SECTION_BOX } from './styles';
 
 const MODE_TABS = [
   { mode: AUTOMATION_MODES.MANUAL, label: 'Manual', Icon: null, active: 'bg-slate-800 text-cyan-400 shadow-sm' },
@@ -26,7 +27,7 @@ const PANEL = {
 };
 
 const RAMP_INPUT =
-  'w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-100 focus:outline-none focus:border-cyan-500';
+  'w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs font-mono font-bold text-slate-200 focus:outline-none focus:border-cyan-500';
 
 const subdivText = (opt) => `${opt.value}x (${opt.label.split(' ')[1] || opt.label})`;
 
@@ -70,7 +71,7 @@ function Segmented({ options, value, onChange, label }) {
           className={`px-2 py-0.5 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
             value === o.value
               ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-              : 'text-slate-400 hover:text-slate-200'
+              : 'text-slate-400 hover:text-slate-300'
           }`}
         >
           {o.label}
@@ -121,7 +122,6 @@ function SubdivPanel({ title, tone, name, subdiv, setSubdiv, units, setUnits, un
   );
 }
 
-const SECTION = 'p-4 rounded-2xl bg-slate-950 border border-slate-800';
 
 export function AutomationEngine({ automationMode, setAutomationMode, trainer, onTrainerChange, activeSongMap }) {
   // set('jogBpm') -> a (value) => void setter for that one setting
@@ -135,7 +135,7 @@ export function AutomationEngine({ automationMode, setAutomationMode, trainer, o
   const unitLabel = subdivMetric === SUBDIV_METRICS.BARS ? 'Bars' : 'Beats';
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-5 shadow-xl">
+    <div className={`${CARD} space-y-5`}>
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
         <div className="flex items-center gap-2">
@@ -155,7 +155,7 @@ export function AutomationEngine({ automationMode, setAutomationMode, trainer, o
             onClick={() => setAutomationMode(mode)}
             aria-pressed={automationMode === mode}
             className={`py-2 text-[11px] font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 ${
-              automationMode === mode ? active : 'text-slate-400 hover:text-slate-200'
+              automationMode === mode ? active : 'text-slate-400 hover:text-slate-300'
             }`}
           >
             {Icon && <Icon className="w-3 h-3" />}
@@ -176,7 +176,7 @@ export function AutomationEngine({ automationMode, setAutomationMode, trainer, o
 
       {/* 2. GRADUAL RAMP UP MODE */}
       {automationMode === AUTOMATION_MODES.RAMP && (
-        <div className={`${SECTION} space-y-4`}>
+        <div className={`${SECTION_BOX} space-y-4`}>
           <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-cyan-400" />
             Gradual Ramp Settings
@@ -197,7 +197,7 @@ export function AutomationEngine({ automationMode, setAutomationMode, trainer, o
 
       {/* 3. JOG / SPRINT TRAINER MODE */}
       {automationMode === AUTOMATION_MODES.JOG_SPRINT && (
-        <div className={`${SECTION} space-y-4`}>
+        <div className={`${SECTION_BOX} space-y-4`}>
           <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
             <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
               <Flame className="w-3.5 h-3.5 text-amber-400" />
@@ -249,7 +249,7 @@ export function AutomationEngine({ automationMode, setAutomationMode, trainer, o
 
       {/* 4. MUTE TRAINER MODE */}
       {automationMode === AUTOMATION_MODES.MUTE_TRAINER && (
-        <div className={`${SECTION} space-y-4`}>
+        <div className={`${SECTION_BOX} space-y-4`}>
           <span className="text-xs font-bold text-rose-300 flex items-center gap-1.5">
             <VolumeX className="w-3.5 h-3.5 text-rose-400" />
             Inner Clock Mute Settings

@@ -138,7 +138,7 @@ test('song map moves to the next section and applies its tempo, meter and subdiv
   assert.equal(s.subdivision, 2);
 });
 
-test('song map loops back to section 1 with all of its settings', () => {
+test('song map loops back to section 1 with all of its settings and emits songComplete', () => {
   const s = base({
     automationMode: AUTOMATION_MODES.SONG_MAP,
     activeSongMap: songMap,
@@ -149,6 +149,7 @@ test('song map loops back to section 1 with all of its settings', () => {
   });
   const patch = advanceAutomation(s, 'bar'); // section 2 has 1 bar
   assert.equal(patch.currentSectionIndex, 0);
+  assert.equal(patch.songComplete, true);
   assert.equal(s.bpm, 100);
   assert.equal(s.beatsPerBar, 4);
   assert.equal(s.subdivision, 1);
@@ -166,4 +167,26 @@ test('out-of-range song tempos are clamped', () => {
   });
   advanceAutomation(s, 'bar');
   assert.equal(s.bpm, MAX_BPM);
+});
+
+test('song map repeats: stays on section until all repeats exhausted, no songComplete mid-repeat', () => {
+  const map = { sections: [{ bars: 2, bpm: 100, beatsPerBar: 4, subdivision: 1, repeats: 3 }] };
+  const s = base({ automationMode: AUTOMATION_MODES.SONG_MAP, activeSongMap: map });
+  // First repeat — two bars
+  advanceAutomation(s, 'bar');
+  const endRepeat1 = advanceAutomation(s, 'bar');
+  assert.equal(endRepeat1.repeatElapsed, 1);
+  assert.equal(endRepeat1.currentSectionIndex, undefined); // did not advance
+  assert.equal(endRepeat1.songComplete, undefined);
+  // Second repeat
+  advanceAutomation(s, 'bar');
+  const endRepeat2 = advanceAutomation(s, 'bar');
+  assert.equal(endRepeat2.repeatElapsed, 2);
+  assert.equal(endRepeat2.currentSectionIndex, undefined);
+  // Third repeat — last one, single-section song so it loops and fires songComplete
+  advanceAutomation(s, 'bar');
+  const endRepeat3 = advanceAutomation(s, 'bar');
+  assert.equal(endRepeat3.repeatElapsed, 0);
+  assert.equal(endRepeat3.currentSectionIndex, 0); // looped
+  assert.equal(endRepeat3.songComplete, true);
 });

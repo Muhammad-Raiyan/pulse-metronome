@@ -14,7 +14,8 @@ export function MainDisplay({
   activeBeat,
   handleTapTempo,
   beatAccents,
-  toggleBeatAccent
+  toggleBeatAccent,
+  isSongMap
 }) {
   return (
     <div className="w-full flex-1 flex flex-col items-center justify-between">
@@ -82,7 +83,7 @@ export function MainDisplay({
       </div>
 
       {/* Slider & Quick Tempo Adjustments */}
-      <div className="w-full space-y-3 mt-4">
+      {!isSongMap && <div className="w-full space-y-3 mt-4">
         <div className="flex items-center gap-3">
           <button onClick={() => setBpm(b => Math.max(30, b - 1))} aria-label="Decrease BPM by 1" className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
             <Minus className="w-5 h-5" />
@@ -112,7 +113,7 @@ export function MainDisplay({
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

@@ -9,6 +9,102 @@ html, body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* Light mode overrides — toggled by ThemeContext via data-theme="light" on <html> */
+[data-theme="light"] {
+  background-color: #f1f5f9; /* slate-100 */
+  color: #0f172a;            /* slate-900 */
+}
+
+[data-theme="light"] body {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Panel / card backgrounds */
+[data-theme="light"] .bg-slate-950 { background-color: #ffffff !important; }
+[data-theme="light"] .bg-slate-950\/60 { background-color: rgba(248,250,252,0.9) !important; }
+[data-theme="light"] .bg-slate-950\/50 { background-color: rgba(248,250,252,0.7) !important; }
+[data-theme="light"] .bg-slate-950\/30 { background-color: rgba(248,250,252,0.5) !important; }
+[data-theme="light"] .bg-slate-900\/90 { background-color: rgba(255,255,255,0.97) !important; }
+[data-theme="light"] .bg-slate-900\/80 { background-color: rgba(255,255,255,0.9) !important; }
+[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0 !important; }
+[data-theme="light"] .bg-slate-800\/80 { background-color: rgba(226,232,240,0.8) !important; }
+[data-theme="light"] .hover\:bg-slate-800:hover { background-color: #cbd5e1 !important; }
+[data-theme="light"] .hover\:bg-slate-700:hover { background-color: #94a3b8 !important; }
+[data-theme="light"] .hover\:bg-slate-800\/70:hover { background-color: rgba(203,213,225,0.7) !important; }
+[data-theme="light"] .bg-slate-800\/70 { background-color: rgba(226,232,240,0.7) !important; }
+[data-theme="light"] .border-slate-800\/80 { border-color: rgba(203,213,225,0.8) !important; }
+[data-theme="light"] .border-slate-800\/50 { border-color: rgba(203,213,225,0.5) !important; }
+
+/* Borders */
+[data-theme="light"] .border-slate-800 { border-color: #cbd5e1 !important; }
+[data-theme="light"] .border-slate-800\/60 { border-color: rgba(203,213,225,0.6) !important; }
+[data-theme="light"] .border-slate-700 { border-color: #94a3b8 !important; }
+[data-theme="light"] .border-slate-700\/60 { border-color: rgba(148,163,184,0.6) !important; }
+
+/* Text */
+[data-theme="light"] .text-slate-100 { color: #0f172a !important; }
+[data-theme="light"] .text-slate-200 { color: #1e293b !important; }
+[data-theme="light"] .text-slate-300 { color: #334155 !important; }
+[data-theme="light"] .text-slate-400 { color: #475569 !important; }
+[data-theme="light"] .text-slate-500 { color: #64748b !important; }
+[data-theme="light"] .min-h-dvh { background-color: #f1f5f9; }
+
+/* Accent colors — darken cyan/purple so they stay visible on white backgrounds */
+
+/* Cyan text */
+[data-theme="light"] .text-cyan-300 { color: #0e7490 !important; }  /* cyan-700 */
+[data-theme="light"] .text-cyan-400 { color: #0891b2 !important; }  /* cyan-600 */
+
+/* Cyan backgrounds/fills */
+[data-theme="light"] .bg-cyan-500\/20 { background-color: rgba(8,145,178,0.12) !important; }
+[data-theme="light"] .bg-cyan-500\/15 { background-color: rgba(8,145,178,0.10) !important; }
+[data-theme="light"] .bg-cyan-500\/10 { background-color: rgba(8,145,178,0.08) !important; }
+
+/* Cyan borders — use cyan-600 so they're visible on white */
+[data-theme="light"] .border-cyan-500 { border-color: #0891b2 !important; }
+[data-theme="light"] .border-cyan-500\/50 { border-color: rgba(8,145,178,0.7) !important; }
+[data-theme="light"] .border-cyan-500\/40 { border-color: rgba(8,145,178,0.6) !important; }
+
+/* Purple text */
+[data-theme="light"] .text-purple-200 { color: #6b21a8 !important; }  /* purple-800 — current step label */
+[data-theme="light"] .text-purple-300 { color: #7e22ce !important; }  /* purple-800 */
+[data-theme="light"] .text-purple-400 { color: #7c3aed !important; }  /* violet-600 */
+
+/* Purple borders */
+[data-theme="light"] .border-purple-500 { border-color: #7c3aed !important; }
+[data-theme="light"] .border-purple-500\/50 { border-color: rgba(124,58,237,0.6) !important; }
+
+/* Purple backgrounds */
+[data-theme="light"] .bg-purple-500\/20 { background-color: rgba(124,58,237,0.1) !important; }
+[data-theme="light"] .bg-purple-500\/10 { background-color: rgba(124,58,237,0.07) !important; }
+[data-theme="light"] .bg-purple-500\/25 { background-color: rgba(124,58,237,0.12) !important; }
+[data-theme="light"] .bg-purple-500\/30 { background-color: rgba(124,58,237,0.15) !important; }
+
+/* Amber */
+[data-theme="light"] .text-amber-300 { color: #b45309 !important; }  /* amber-700 */
+[data-theme="light"] .text-amber-400 { color: #d97706 !important; }  /* amber-500 */
+[data-theme="light"] .border-amber-500\/50 { border-color: rgba(217,119,6,0.6) !important; }
+[data-theme="light"] .bg-amber-500\/25 { background-color: rgba(217,119,6,0.1) !important; }
+
+/* Rose */
+[data-theme="light"] .text-rose-300 { color: #be123c !important; }  /* rose-700 */
+[data-theme="light"] .text-rose-400 { color: #e11d48 !important; }  /* rose-600 */
+[data-theme="light"] .text-rose-500 { color: #e11d48 !important; }
+[data-theme="light"] .border-rose-500\/40 { border-color: rgba(225,29,72,0.5) !important; }
+[data-theme="light"] .border-rose-900\/40 { border-color: rgba(225,29,72,0.35) !important; }  /* muted beat tile */
+[data-theme="light"] .border-rose-900\/60 { border-color: rgba(225,29,72,0.5) !important; }  /* muted accent strip */
+[data-theme="light"] .bg-rose-500\/20 { background-color: rgba(225,29,72,0.08) !important; }
+[data-theme="light"] .bg-rose-500\/10 { background-color: rgba(225,29,72,0.06) !important; }
+[data-theme="light"] .bg-rose-500\/30 { background-color: rgba(225,29,72,0.10) !important; }
+
+/* Emerald (song complete) */
+[data-theme="light"] .text-emerald-300 { color: #047857 !important; }
+[data-theme="light"] .text-emerald-400 { color: #059669 !important; }
+[data-theme="light"] .border-emerald-500\/40 { border-color: rgba(16,185,129,0.5) !important; }
+[data-theme="light"] .bg-emerald-500\/20 { background-color: rgba(16,185,129,0.08) !important; }
+
+
 /* Visible keyboard focus for every interactive control */
 button:focus-visible,
 input:focus-visible,

@@ -4,6 +4,7 @@ import { clampBpm } from './constants.js';
 export const MAX_STEP_BARS = 32;
 export const MAX_METER = 12;
 export const MAX_SUBDIVISION = 10;
+export const MAX_REPEATS = 16;
 
 const DEFAULT_BARS = 4;
 
@@ -18,13 +19,20 @@ const newId = () => `step-${++idCounter}`;
 // Build a valid step from anything that looks like one. Every value ends up in range.
 export function makeStep(values = {}, defaults = {}) {
   const v = { ...defaults, ...values };
+  const beatsPerBar = clampInt(v.beatsPerBar, 1, MAX_METER, 4);
+  // beatAccents: array of length beatsPerBar — first beat accented, rest normal (value 1)
+  const beatAccents = Array.isArray(v.beatAccents) && v.beatAccents.length === beatsPerBar
+    ? v.beatAccents.map(Number)
+    : [0, ...Array(beatsPerBar - 1).fill(1)];
   return {
     id: newId(),
     name: typeof v.name === 'string' ? v.name : '',
     bars: clampInt(v.bars, 1, MAX_STEP_BARS, DEFAULT_BARS),
     bpm: clampBpm(v.bpm || 120),
-    beatsPerBar: clampInt(v.beatsPerBar, 1, MAX_METER, 4),
+    beatsPerBar,
     subdivision: clampInt(v.subdivision, 1, MAX_SUBDIVISION, 1),
+    repeats: clampInt(v.repeats, 1, MAX_REPEATS, 1),
+    beatAccents,
   };
 }
 

@@ -43,7 +43,7 @@ test('songToSequence copies sections, uses song values as fallbacks and makes ne
   assert.equal(copy.sections.length, 2);
   assert.deepEqual(
     { ...copy.sections[0], id: null },
-    { id: null, name: 'Intro', bars: 2, bpm: 100, beatsPerBar: 4, subdivision: 2 }
+    { id: null, name: 'Intro', bars: 2, bpm: 100, beatsPerBar: 4, subdivision: 2, repeats: 1, beatAccents: [0, 1, 1, 1] }
   );
   assert.equal(copy.sections[1].bpm, 90);
   assert.equal(copy.sections[1].beatsPerBar, 3);
