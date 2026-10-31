@@ -8,10 +8,38 @@
     "beatsPerBar": 4,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "1. Slow Intro (100 BPM)", "bars": 2, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "2. Mid Groove (120 BPM - 8ths)", "bars": 2, "bpm": 120, "beatsPerBar": 4, "subdivision": 2 },
-      { "id": 3, "name": "3. Speed Burst (160 BPM - 16ths)", "bars": 2, "bpm": 160, "beatsPerBar": 4, "subdivision": 4 },
-      { "id": 4, "name": "4. Odd Time Breakdown (130 BPM in 3/4)", "bars": 2, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "1. Slow Intro (100 BPM)",
+        "bars": 2,
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "2. Mid Groove (120 BPM - 8ths)",
+        "bars": 2,
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "subdivision": 2
+      },
+      {
+        "id": 3,
+        "name": "3. Speed Burst (160 BPM - 16ths)",
+        "bars": 2,
+        "bpm": 160,
+        "beatsPerBar": 4,
+        "subdivision": 4
+      },
+      {
+        "id": 4,
+        "name": "4. Odd Time Breakdown (130 BPM in 3/4)",
+        "bars": 2,
+        "bpm": 130,
+        "beatsPerBar": 3,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -24,9 +52,126 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Acoustic Intro", "bars": 8, "bpm": 130, "beatsPerBar": 3, "subdivision": 1 },
-      { "id": 2, "name": "Fast Downpicking Thrash", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Guitar Solo", "bars": 12, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Acoustic Intro",
+        "bars": 18,
+        "bpm": 80,
+        "beatsPerBar": 3,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Intro 2",
+        "bars": 24,
+        "bpm": 201,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Verse 1",
+        "bars": 12,
+        "bpm": 191,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Verse 2",
+        "bars": 12,
+        "bpm": 191,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Chorus",
+        "bars": 8,
+        "bpm": 181,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Pre-Verse",
+        "bars": 8,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Verse 3",
+        "bars": 12,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Chorus",
+        "bars": 8,
+        "bpm": 186,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Bridge",
+        "bars": 4,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Solo 1",
+        "bars": 18,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Harmony Section",
+        "bars": 22,
+        "bpm": 185,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Pre-Verse",
+        "bars": 8,
+        "bpm": 179,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Verse 4",
+        "bars": 12,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Chorus",
+        "bars": 8,
+        "bpm": 185,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Outro",
+        "bars": 22,
+        "bpm": 185,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -39,9 +184,182 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Intro / Main Riff", "bars": 12, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Verse & Chorus", "bars": 16, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Solo Section", "bars": 16, "bpm": 150, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 9,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Main Riff",
+        "bars": 12,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Transition",
+        "bars": 5,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Verse 1",
+        "bars": 8,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Pre-Chorus",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Chorus",
+        "bars": 10,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Transition",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Verse 2",
+        "bars": 8,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Pre-Chorus",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Chorus",
+        "bars": 11,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Bridge",
+        "bars": 20,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Interlude",
+        "bars": 12,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Guitar Solo",
+        "bars": 36,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Double Time",
+        "bars": 24,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Bridge",
+        "bars": 21,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Intro Reprise",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Main Riff",
+        "bars": 13,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 18,
+        "name": "Verse 3",
+        "bars": 8,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 19,
+        "name": "Pre-Chorus",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 20,
+        "name": "Chorus",
+        "bars": 10,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 21,
+        "name": "Transition",
+        "bars": 4,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 22,
+        "name": "Outro",
+        "bars": 20,
+        "bpm": 152,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -63,9 +381,30 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Acoustic Verse", "bars": 16, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Fast Outro Solo", "bars": 16, "bpm": 140, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Acoustic Verse",
+        "bars": 16,
+        "bpm": 112,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Heavy Chorus",
+        "bars": 8,
+        "bpm": 112,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Fast Outro Solo",
+        "bars": 16,
+        "bpm": 140,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -96,8 +435,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Main Downpick Riff", "bars": 16, "bpm": 198, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Die Breakdown", "bars": 8, "bpm": 198, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Main Downpick Riff",
+        "bars": 16,
+        "bpm": 198,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Die Breakdown",
+        "bars": 8,
+        "bpm": 198,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -119,26 +472,361 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Acoustic Intro", "bars": 12, "bpm": 100, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Galloping Thrash Riff", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Verse / Chorus", "bars": 16, "bpm": 192, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 12,
+        "bpm": 76,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Intro 2",
+        "bars": 9,
+        "bpm": 76,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Pre-Verse",
+        "bars": 8,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Full band",
+        "bars": 11,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Verse 1",
+        "bars": 8,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Pre-Chorus",
+        "bars": 14,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Chorus",
+        "bars": 10,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Verse 2",
+        "bars": 8,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Pre-Chorus",
+        "bars": 14,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Chorus",
+        "bars": 7,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Bridge",
+        "bars": 10,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Pre-Solo",
+        "bars": 17,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Guitar Solo",
+        "bars": 24,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Bridge",
+        "bars": 10,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Verse 3",
+        "bars": 8,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Pre-Chorus",
+        "bars": 14,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Chorus",
+        "bars": 14,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 18,
+        "name": "Outro",
+        "bars": 19,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
     "id": "mop-02",
+    "songsterrId": 455118,
     "title": "Master of Puppets",
     "artist": "Metallica",
     "album": "Master of Puppets",
     "bpm": 212,
     "beatsPerBar": 4,
     "subdivision": 1,
-    "beatAccents": [0, 1, 1, 1],
+    "beatAccents": [
+      0,
+      1,
+      1,
+      1
+    ],
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Fast Main Riff", "bars": 12, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Verse 1", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Clean Interlude", "bars": 8, "bpm": 110, "beatsPerBar": 4, "subdivision": 2 },
-      { "id": 4, "name": "Guitar Solo", "bars": 16, "bpm": 212, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 19,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Main Riff",
+        "bars": 27,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Verse Riff",
+        "bars": 8,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Verse 1",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Pre-chorus",
+        "bars": 16,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Chorus",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Main Riff",
+        "bars": 9,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Verse 2",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Pre-chorus",
+        "bars": 16,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Chorus",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Interlude",
+        "bars": 12,
+        "bpm": 174,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Harmony",
+        "bars": 8,
+        "bpm": 106,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Solo (James)",
+        "bars": 8,
+        "bpm": 106,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Harmony",
+        "bars": 8,
+        "bpm": 106,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "End Interlude - Build Up",
+        "bars": 12,
+        "bpm": 106,
+        "beatsPerBar": 2,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Breakdown",
+        "bars": 16,
+        "bpm": 106,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Solo (Kirk)",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 18,
+        "name": "Bridge",
+        "bars": 8,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 19,
+        "name": "Bridge",
+        "bars": 18,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 20,
+        "name": "Main Riff",
+        "bars": 9,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 21,
+        "name": "Verse 3",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 22,
+        "name": "Pre-chorus",
+        "bars": 16,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 23,
+        "name": "Chorus",
+        "bars": 25,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 24,
+        "name": "Outro",
+        "bars": 33,
+        "bpm": 212,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -148,7 +836,106 @@
     "album": "Master of Puppets",
     "bpm": 110,
     "beatsPerBar": 4,
-    "subdivision": 1
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 9,
+        "bpm": 113,
+        "beatsPerBar": 1,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Main Riff",
+        "bars": 16,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Verse 1",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Chorus 1",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Main Riff",
+        "bars": 8,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Verse 2",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Chorus 2",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Guitar Solo",
+        "bars": 9,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Bridge",
+        "bars": 14,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Verse 3",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Chorus 3",
+        "bars": 18,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Outro",
+        "bars": 23,
+        "bpm": 113,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
+    ]
   },
   {
     "id": "mop-04",
@@ -160,9 +947,142 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Clean Verse", "bars": 16, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Fast Outro Riff", "bars": 16, "bpm": 170, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 8,
+        "bpm": 94,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Main Riff",
+        "bars": 12,
+        "bpm": 94,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Guitar Solo 1",
+        "bars": 12,
+        "bpm": 94,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Verse 1",
+        "bars": 12,
+        "bpm": 94,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Pre-Chorus",
+        "bars": 6,
+        "bpm": 94,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Chorus",
+        "bars": 8,
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Guitar Solo 2",
+        "bars": 13,
+        "bpm": 97,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Verse 2",
+        "bars": 12,
+        "bpm": 97,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Pre-Chorus",
+        "bars": 6,
+        "bpm": 97,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Chorus",
+        "bars": 12,
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Breakdown",
+        "bars": 24,
+        "bpm": 219,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Breakdown Verse",
+        "bars": 10,
+        "bpm": 109,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Main Solo",
+        "bars": 18,
+        "bpm": 219,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Bridge",
+        "bars": 16,
+        "bpm": 110,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Guitar Solo 4",
+        "bars": 9,
+        "bpm": 110,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Outro",
+        "bars": 9,
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Drum Outro",
+        "bars": 6,
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -172,7 +1092,178 @@
     "album": "Master of Puppets",
     "bpm": 180,
     "beatsPerBar": 4,
-    "subdivision": 1
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      {
+        "id": 1,
+        "name": "Intro",
+        "bars": 18,
+        "bpm": 205,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Intro",
+        "bars": 32,
+        "bpm": 178,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Intro",
+        "bars": 8,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Pre-Verse",
+        "bars": 8,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Verse",
+        "bars": 16,
+        "bpm": 178,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Pre-Chorus",
+        "bars": 24,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Chorus",
+        "bars": 19,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Verse",
+        "bars": 16,
+        "bpm": 178,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Pre-Chorus",
+        "bars": 24,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Chorus",
+        "bars": 20,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Interlude",
+        "bars": 8,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Bridge",
+        "bars": 8,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Solo",
+        "bars": 48,
+        "bpm": 194,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Interlude",
+        "bars": 8,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Bridge",
+        "bars": 13,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Pre-Verse",
+        "bars": 8,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Verse",
+        "bars": 16,
+        "bpm": 178,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 18,
+        "name": "Pre-Chorus",
+        "bars": 24,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 19,
+        "name": "Chorus",
+        "bars": 19,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 20,
+        "name": "Chorus",
+        "bars": 16,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 21,
+        "name": "Outro",
+        "bars": 30,
+        "bpm": 188,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
+    ]
   },
   {
     "id": "mop-06",
@@ -184,8 +1275,206 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Mid-Tempo Groove", "bars": 16, "bpm": 138, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Solo Speed Up", "bars": 12, "bpm": 180, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Count-In",
+        "bars": 3,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Intro",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Main Riff",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Bass Interlude",
+        "bars": 12,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Pre-Verse",
+        "bars": 4,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Verse 1",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Pre-Chorus",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Break",
+        "bars": 4,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Chorus",
+        "bars": 10,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Main Riff",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Verse 2",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Pre-Chorus",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Break",
+        "bars": 4,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Chorus",
+        "bars": 10,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Main Riff",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Interlude",
+        "bars": 18,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Bridge",
+        "bars": 8,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 18,
+        "name": "Bridge Verse",
+        "bars": 8,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 19,
+        "name": "Solo",
+        "bars": 32,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 20,
+        "name": "Post-Solo",
+        "bars": 4,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 21,
+        "name": "Fast Chorus",
+        "bars": 12,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 22,
+        "name": "Post-Chorus",
+        "bars": 6,
+        "bpm": 180,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 23,
+        "name": "Break",
+        "bars": 7,
+        "bpm": 160,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 24,
+        "name": "Coda",
+        "bars": 8,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 25,
+        "name": "Outro",
+        "bars": 2,
+        "bpm": 136,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -198,9 +1487,142 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Main Heavy Groove", "bars": 16, "bpm": 128, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Bass Solo Interlude", "bars": 12, "bpm": 64, "beatsPerBar": 4, "subdivision": 2 },
-      { "id": 3, "name": "Outro Riff", "bars": 16, "bpm": 128, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Intro (Fade In)",
+        "bars": 32,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Guitar Entrance",
+        "bars": 24,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Bass Lead",
+        "bars": 16,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Chorus Riff",
+        "bars": 16,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Verse Riff",
+        "bars": 8,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Pre-Solo",
+        "bars": 8,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Guitar Solo I",
+        "bars": 17,
+        "bpm": 128,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Post-Solo",
+        "bars": 7,
+        "bpm": 125,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Interlude Bass Break",
+        "bars": 8,
+        "bpm": 78,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Interlude Harmony",
+        "bars": 36,
+        "bpm": 78,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Interlude Melody",
+        "bars": 16,
+        "bpm": 78,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 12,
+        "name": "Guitar Solo II",
+        "bars": 8,
+        "bpm": 78,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 13,
+        "name": "Bass Solo",
+        "bars": 8,
+        "bpm": 78,
+        "beatsPerBar": 6,
+        "subdivision": 1
+      },
+      {
+        "id": 14,
+        "name": "Bridge",
+        "bars": 4,
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 15,
+        "name": "Guitar Solo III",
+        "bars": 16,
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 16,
+        "name": "Outro",
+        "bars": 8,
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 17,
+        "name": "Outro Double Bass (Fade-Out)",
+        "bars": 19,
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -210,7 +1632,98 @@
     "album": "Master of Puppets",
     "bpm": 184,
     "beatsPerBar": 4,
-    "subdivision": 1
+    "subdivision": 1,
+    "hasSections": true,
+    "sections": [
+      {
+        "id": 1,
+        "name": "Fade in",
+        "bars": 19,
+        "bpm": 49,
+        "beatsPerBar": 2,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "End of fade in",
+        "bars": 37,
+        "bpm": 167,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Verse 1",
+        "bars": 16,
+        "bpm": 187,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Chorus",
+        "bars": 12,
+        "bpm": 187,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 5,
+        "name": "Verse 2",
+        "bars": 16,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 6,
+        "name": "Chorus",
+        "bars": 9,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 7,
+        "name": "Bridge 1",
+        "bars": 16,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 8,
+        "name": "Bridge 2",
+        "bars": 10,
+        "bpm": 182,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 9,
+        "name": "Solo",
+        "bars": 51,
+        "bpm": 191,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 10,
+        "name": "Verse 3",
+        "bars": 16,
+        "bpm": 183,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 11,
+        "name": "Outro",
+        "bars": 11,
+        "bpm": 183,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
+    ]
   },
   {
     "id": "ajfa-01",
@@ -222,8 +1735,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Reverse Guitar Intro", "bars": 8, "bpm": 130, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Main Thrash Riff", "bars": 16, "bpm": 190, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Reverse Guitar Intro",
+        "bars": 8,
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Main Thrash Riff",
+        "bars": 16,
+        "bpm": 190,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -236,8 +1763,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Clean Intro", "bars": 12, "bpm": 86, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Progressive Main Riff", "bars": 16, "bpm": 172, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Clean Intro",
+        "bars": 12,
+        "bpm": 86,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Progressive Main Riff",
+        "bars": 16,
+        "bpm": 172,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -259,10 +1800,38 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Clean Verse", "bars": 16, "bpm": 108, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Heavy Chorus", "bars": 8, "bpm": 108, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Machine Gun Riff", "bars": 12, "bpm": 142, "beatsPerBar": 4, "subdivision": 2 },
-      { "id": 4, "name": "Outro Solo", "bars": 16, "bpm": 142, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Clean Verse",
+        "bars": 16,
+        "bpm": 108,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Heavy Chorus",
+        "bars": 8,
+        "bpm": 108,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Machine Gun Riff",
+        "bars": 12,
+        "bpm": 142,
+        "beatsPerBar": 4,
+        "subdivision": 2
+      },
+      {
+        "id": 4,
+        "name": "Outro Solo",
+        "bars": 16,
+        "bpm": 142,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -302,9 +1871,30 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Acoustic Intro", "bars": 8, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Clean Interlude", "bars": 8, "bpm": 72, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "Heavy Outro", "bars": 12, "bpm": 104, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Acoustic Intro",
+        "bars": 8,
+        "bpm": 104,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Clean Interlude",
+        "bars": 8,
+        "bpm": 72,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "Heavy Outro",
+        "bars": 12,
+        "bpm": 104,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -326,10 +1916,38 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Holy Wars Riff", "bars": 16, "bpm": 168, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Acoustic Bridge", "bars": 4, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 3, "name": "The Punishment Due", "bars": 16, "bpm": 112, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 4, "name": "Final Speed Solo", "bars": 12, "bpm": 168, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Holy Wars Riff",
+        "bars": 16,
+        "bpm": 168,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Acoustic Bridge",
+        "bars": 4,
+        "bpm": 112,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 3,
+        "name": "The Punishment Due",
+        "bars": 16,
+        "bpm": 112,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 4,
+        "name": "Final Speed Solo",
+        "bars": 12,
+        "bpm": 168,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -351,8 +1969,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Technical Intro", "bars": 8, "bpm": 160, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Fast Verse", "bars": 16, "bpm": 210, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Technical Intro",
+        "bars": 8,
+        "bpm": 160,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Fast Verse",
+        "bars": 16,
+        "bpm": 210,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -365,8 +1997,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Bass Build Intro", "bars": 12, "bpm": 88, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "High Speed Riffing", "bars": 16, "bpm": 185, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Bass Build Intro",
+        "bars": 12,
+        "bpm": 88,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "High Speed Riffing",
+        "bars": 16,
+        "bpm": 185,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -379,8 +2025,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Bass Intro", "bars": 6, "bpm": 162, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Speed Sprint", "bars": 16, "bpm": 220, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Bass Intro",
+        "bars": 6,
+        "bpm": 162,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Speed Sprint",
+        "bars": 16,
+        "bpm": 220,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {
@@ -393,8 +2053,22 @@
     "subdivision": 1,
     "hasSections": true,
     "sections": [
-      { "id": 1, "name": "Main Swing Riff", "bars": 16, "bpm": 110, "beatsPerBar": 4, "subdivision": 1 },
-      { "id": 2, "name": "Solo Ramp Up", "bars": 12, "bpm": 170, "beatsPerBar": 4, "subdivision": 1 }
+      {
+        "id": 1,
+        "name": "Main Swing Riff",
+        "bars": 16,
+        "bpm": 110,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      },
+      {
+        "id": 2,
+        "name": "Solo Ramp Up",
+        "bars": 12,
+        "bpm": 170,
+        "beatsPerBar": 4,
+        "subdivision": 1
+      }
     ]
   },
   {

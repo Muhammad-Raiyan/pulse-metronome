@@ -23,6 +23,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@coderline/alphatab": "^1.9.0",
     "@vitejs/plugin-react": "^6.1.2",
     "oxlint": "^1.89.0",
     "tailwindcss": "^4.3.3",
