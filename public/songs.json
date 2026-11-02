@@ -1,7 +1,7 @@
 [
   {
     "id": "song-test",
-    "title": "Test Suite (Quick Section Switch)",
+    "title": "MIDI Export Test",
     "artist": "Metronome Dev",
     "album": "Automation Sandbox",
     "bpm": 120,
@@ -10,35 +10,61 @@
     "sections": [
       {
         "id": 1,
-        "name": "1. Slow Intro (100 BPM)",
-        "bars": 2,
+        "name": "Clean Intro",
+        "bars": 4,
         "bpm": 100,
         "beatsPerBar": 4,
-        "subdivision": 1
+        "subdivision": 1,
+        "pc": 0,
+        "beatAccents": [0, 1, 1, 1]
       },
       {
         "id": 2,
-        "name": "2. Mid Groove (120 BPM - 8ths)",
-        "bars": 2,
+        "name": "Rhythm (8ths)",
+        "bars": 4,
         "bpm": 120,
         "beatsPerBar": 4,
-        "subdivision": 2
+        "subdivision": 2,
+        "pc": 1,
+        "beatAccents": [0, 1, 0, 1]
       },
       {
         "id": 3,
-        "name": "3. Speed Burst (160 BPM - 16ths)",
-        "bars": 2,
-        "bpm": 160,
-        "beatsPerBar": 4,
-        "subdivision": 4
+        "name": "Odd Time (3/4)",
+        "bars": 4,
+        "bpm": 120,
+        "beatsPerBar": 3,
+        "subdivision": 1,
+        "pc": 1,
+        "beatAccents": [0, 1, 1]
       },
       {
         "id": 4,
-        "name": "4. Odd Time Breakdown (130 BPM in 3/4)",
+        "name": "Speed Burst (16ths)",
+        "bars": 4,
+        "bpm": 160,
+        "beatsPerBar": 4,
+        "subdivision": 4,
+        "pc": 2,
+        "beatAccents": [0, 1, 2, 1]
+      },
+      {
+        "id": 5,
+        "name": "Muted Section",
         "bars": 2,
-        "bpm": 130,
-        "beatsPerBar": 3,
-        "subdivision": 1
+        "bpm": 160,
+        "beatsPerBar": 4,
+        "subdivision": 1,
+        "beatAccents": [0, 3, 3, 3]
+      },
+      {
+        "id": 6,
+        "name": "Tempo Change Outro",
+        "bars": 4,
+        "bpm": 80,
+        "beatsPerBar": 4,
+        "subdivision": 1,
+        "pc": 0
       }
     ]
   },
