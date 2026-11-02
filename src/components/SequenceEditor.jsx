@@ -9,10 +9,15 @@ import {
 import { CARD, INPUT } from './styles';
 
 const METERS = Array.from({ length: MAX_METER }, (_, i) => i + 1);
-const COLUMNS = 'grid grid-cols-[2.75rem_minmax(0,1fr)_3rem_3rem_3.5rem_minmax(0,1fr)_minmax(0,1fr)_5.5rem] gap-1.5 items-center';
-// Sequence editor fields focus-ring uses purple instead of cyan
+const COLUMNS = 'grid grid-cols-[minmax(0,1fr)_3rem_3rem_3.5rem_minmax(0,1fr)_minmax(0,1fr)] gap-1.5 items-center';
 const FIELD = `${INPUT} px-1.5 focus:border-purple-500`;
 const SELECT = `${FIELD} pr-6 pl-1.5`;
+const ACCENT_COLORS = [
+  'border-cyan-500 text-cyan-300 bg-cyan-500/10',           // Accented
+  'border-slate-600 text-slate-400 bg-transparent',         // Normal
+  'border-slate-700 text-slate-500 bg-transparent opacity-60', // Soft
+  'border-rose-900/60 text-rose-500 bg-transparent opacity-50', // Muted
+];
 
 function IconButton({ label, onClick, disabled, children }) {
   return (
@@ -59,7 +64,7 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
 
           {steps.length > 0 && (
             <div className={`${COLUMNS} px-1.5 text-[11px] text-slate-400`} aria-hidden="true">
-              <span></span><span>Name</span><span>Bars</span><span>×</span><span>BPM</span><span>Meter</span><span>Subdiv</span><span />
+              <span>Name</span><span>Bars</span><span>×</span><span>BPM</span><span>Meter</span><span>Subdiv</span>
             </div>
           )}
 
@@ -97,25 +102,8 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
                       style={{ width: `${progress * 100}%` }}
                     />
                   )}
-                  {/* Main fields row */}
-                  <div className={`${COLUMNS} p-1.5`}>
-                    {/* Start / loop buttons — left cell */}
-                    <div className="flex items-center gap-0.5">
-                      <IconButton
-                        label={`Start from section ${n}`}
-                        disabled={isPlaying}
-                        onClick={() => startSectionIndex === i && !loopSection ? onClearStart() : onSetStart(i)}
-                      >
-                        <PlayCircle className={`w-3.5 h-3.5 ${startSectionIndex === i && !loopSection ? 'text-emerald-400' : ''}`} />
-                      </IconButton>
-                      <IconButton
-                        label={`Loop section ${n}`}
-                        disabled={isPlaying}
-                        onClick={() => startSectionIndex === i && loopSection ? onClearStart() : onSetLoop(i)}
-                      >
-                        <Repeat className={`w-3.5 h-3.5 ${startSectionIndex === i && loopSection ? 'text-amber-400' : ''}`} />
-                      </IconButton>
-                    </div>
+                  {/* Main fields — row 1: name + numeric fields */}
+                  <div className={`${COLUMNS} px-1.5 pt-1.5`}>
                     <input
                       type="text"
                       value={step.name}
@@ -156,7 +144,44 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
                         <option key={o.value} value={o.value}>{o.value}x</option>
                       ))}
                     </Select>
-                    <div className="flex items-center justify-end">
+                  </div>
+                  {/* Row 2: start/loop | accents (centre) | action buttons */}
+                  <div className="flex items-center px-2 pb-1.5 gap-1">
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <IconButton
+                        label={`Start from section ${n}`}
+                        disabled={isPlaying}
+                        onClick={() => startSectionIndex === i && !loopSection ? onClearStart() : onSetStart(i)}
+                      >
+                        <PlayCircle className={`w-3.5 h-3.5 ${startSectionIndex === i && !loopSection ? 'text-emerald-400' : ''}`} />
+                      </IconButton>
+                      <IconButton
+                        label={`Loop section ${n}`}
+                        disabled={isPlaying}
+                        onClick={() => startSectionIndex === i && loopSection ? onClearStart() : onSetLoop(i)}
+                      >
+                        <Repeat className={`w-3.5 h-3.5 ${startSectionIndex === i && loopSection ? 'text-amber-400' : ''}`} />
+                      </IconButton>
+                    </div>
+                    <div className="flex items-center gap-1 flex-wrap flex-1 justify-center">
+                      {accents.map((accent, b) => (
+                        <button
+                          key={b}
+                          disabled={isPlaying}
+                          onClick={() => {
+                            const next = [...accents];
+                            next[b] = (accent + 1) % Object.keys(ACCENT_TYPES).length;
+                            onChange(updateStep(steps, i, 'beatAccents', next));
+                          }}
+                          title={`Beat ${b + 1}: ${ACCENT_LABELS[accent]} — click to cycle`}
+                          aria-label={`Step ${n} beat ${b + 1} accent: ${ACCENT_LABELS[accent]}`}
+                          className={`w-5 h-5 rounded text-[9px] font-mono font-bold border transition-all cursor-pointer disabled:cursor-default ${ACCENT_COLORS[accent]}`}
+                        >
+                          {b + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex items-center shrink-0">
                       <IconButton label={`Move step ${n} up`} disabled={isPlaying || i === 0} onClick={() => onChange(moveStep(steps, i, -1))}>
                         <ChevronUp className="w-3.5 h-3.5" />
                       </IconButton>
@@ -169,36 +194,8 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
                       <IconButton label={`Remove step ${n}`} disabled={isPlaying} onClick={() => onChange(removeStep(steps, i))}>
                         <Trash2 className="w-3.5 h-3.5" />
                       </IconButton>
-                      {/* Step number — bottom right */}
                       <span className="text-[10px] font-mono text-slate-600 pl-0.5 select-none">{n}</span>
                     </div>
-                  </div>
-                  {/* Per-step accent strip */}
-                  <div className="flex items-center gap-1 px-2 pb-1.5">
-                    {accents.map((accent, b) => {
-                      const accentColors = [
-                        'border-cyan-500 text-cyan-300 bg-cyan-500/10',   // Accented
-                        'border-slate-600 text-slate-400 bg-transparent', // Normal
-                        'border-slate-700 text-slate-500 bg-transparent opacity-60', // Soft
-                        'border-rose-900/60 text-rose-500 bg-transparent opacity-50', // Muted
-                      ];
-                      return (
-                        <button
-                          key={b}
-                          disabled={isPlaying}
-                          onClick={() => {
-                            const next = [...accents];
-                            next[b] = (accent + 1) % Object.keys(ACCENT_TYPES).length;
-                            onChange(updateStep(steps, i, 'beatAccents', next));
-                          }}
-                          title={`Beat ${b + 1}: ${ACCENT_LABELS[accent]} — click to cycle`}
-                          aria-label={`Step ${n} beat ${b + 1} accent: ${ACCENT_LABELS[accent]}`}
-                          className={`w-5 h-5 rounded text-[9px] font-mono font-bold border transition-all cursor-pointer disabled:cursor-default ${accentColors[accent]}`}
-                        >
-                          {b + 1}
-                        </button>
-                      );
-                    })}
                   </div>
                 </div>
               );
