@@ -38,6 +38,26 @@
 - **Drag-and-drop reordering** of steps (buttons work for now).
 - **Smoother progress bar** — currently moves per bar; per-beat would need a beat callback from the audio engine.
 
+### MIDI export (planned)
+
+Goal: export a `.mid` file from a loaded song map that can be imported directly into Reaper (or any DAW) as a ready-to-use practice/session template.
+
+**File format:** Type 1 MIDI (multi-track)
+- **Track 0 — Tempo map:** one tempo-change event per section boundary so the DAW timeline ruler aligns to the song structure.
+- **Track 1 — Click track:** one MIDI note per beat (and subdivision if > 1x), with velocity reflecting accent type (accented = 127, normal = 80, soft = 50, muted = 0). Lets you route the track to any drum sampler as a click.
+- **Track 2 — Section markers:** a MIDI text/marker meta-event at the start of each section containing the section name. In Reaper these appear as named markers on the timeline, making it easy to draw mute automation against them per guitar tone track.
+
+**Optional per-section field:** `pc` (0–127) — if set, a Program Change event is inserted at the section start on a third MIDI track. Useful for preset switching in Neural DSP / amp sims without needing loopMIDI at practice time.
+
+**UI:** "Export MIDI" button in the Song Map panel (only shown when a song is loaded and stopped). Downloads a `.mid` file named after the song title.
+
+**Implementation plan:**
+- [x] `src/audio/midiExport.js` — pure-JS Type 1 MIDI file encoder (no library needed, ~150 lines). Functions: `buildTempoTrack`, `buildClickTrack`, `buildMarkerTrack`, `encodeMidi`.
+- [x] Add optional `pc` field to `makeStep` / `sequence.js` and the `SequenceEditor` row.
+- [x] Export button in `SequenceEditor` (or `MetronomeControls`) that calls `encodeMidi` and triggers a `<a download>` save.
+- [x] Tests for the encoder covering tempo map, note timing, and marker text encoding.
+- [ ] Try the exported file in Reaper (tempo map, markers, click routing, program changes).
+
 ---
 
 ## Completed
