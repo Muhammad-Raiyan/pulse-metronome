@@ -74,7 +74,7 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
             </div>
           )}
 
-          <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1">
+          <div className="sm:max-h-72 sm:overflow-y-auto space-y-1.5 pr-1">
             {steps.map((step, i) => {
               const n = i + 1;
               const isCurrent = isPlaying && i === currentSectionIndex;
