@@ -194,15 +194,17 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
                         </button>
                       ))}
                     </div>
-                    <input
-                      type="number" min={0} max={127} value={step.pc ?? ''} disabled={isPlaying}
-                      onChange={(e) => {
-                        const n = e.target.value === '' ? undefined : Number(e.target.value);
-                        onChange(updateStep(steps, i, 'pc', n));
-                      }}
-                      aria-label={`Step ${n} MIDI program change`} title="MIDI program change (0–127), exported at section start"
-                      placeholder="PC" className={`${FIELD} w-12 shrink-0 placeholder:text-slate-600`}
-                    />
+                    <div className="w-12 shrink-0">
+                      <input
+                        type="number" min={0} max={127} value={step.pc ?? ''} disabled={isPlaying}
+                        onChange={(e) => {
+                          const v = e.target.value === '' ? undefined : Number(e.target.value);
+                          onChange(updateStep(steps, i, 'pc', v));
+                        }}
+                        aria-label={`Step ${n} MIDI program change`} title="MIDI program change (0–127), exported at section start"
+                        placeholder="PC" className={`${FIELD} placeholder:text-slate-600`}
+                      />
+                    </div>
                     <div className="flex items-center shrink-0">
                       <IconButton label={`Move step ${n} up`} disabled={isPlaying || i === 0} onClick={() => onChange(moveStep(steps, i, -1))}>
                         <ChevronUp className="w-3.5 h-3.5" />
