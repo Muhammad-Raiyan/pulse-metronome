@@ -1,4 +1,4 @@
-import { Plus, Copy, Trash2, ChevronUp, ChevronDown, FilePlus2, PlayCircle, Repeat } from 'lucide-react';
+import { Plus, Copy, Trash2, ChevronUp, ChevronDown, FilePlus2, PlayCircle, Repeat, Download } from 'lucide-react';
 import { NumberInput } from './NumberInput';
 import { Select } from './Select';
 import { MIN_BPM, MAX_BPM, SUBDIVISION_OPTIONS, ACCENT_TYPES, ACCENT_LABELS } from '../constants';
@@ -6,6 +6,7 @@ import {
   MAX_STEP_BARS, MAX_METER, MAX_REPEATS,
   updateStep, addStep, duplicateStep, removeStep, moveStep,
 } from '../sequence';
+import { encodeMidi, midiFileName } from '../audio/midiExport';
 import { CARD, INPUT } from './styles';
 
 const METERS = Array.from({ length: MAX_METER }, (_, i) => i + 1);
@@ -43,6 +44,18 @@ function ActionButton({ onClick, Icon, children }) {
       {children}
     </button>
   );
+}
+
+// Download the sequence as a Type 1 .mid file named after the song
+function downloadMidi(title, steps) {
+  const url = URL.createObjectURL(new Blob([encodeMidi(steps)], { type: 'audio/midi' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = midiFileName(title);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 // Song-tab tools: start a new sequence and edit the steps of the loaded song. The list is locked while playing so a step can't change under the audio.
@@ -181,6 +194,17 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
                         </button>
                       ))}
                     </div>
+                    <div className="w-12 shrink-0">
+                      <input
+                        type="number" min={0} max={127} value={step.pc ?? ''} disabled={isPlaying}
+                        onChange={(e) => {
+                          const v = e.target.value === '' ? undefined : Number(e.target.value);
+                          onChange(updateStep(steps, i, 'pc', v));
+                        }}
+                        aria-label={`Step ${n} MIDI program change`} title="MIDI program change (0–127), exported at section start"
+                        placeholder="PC" className={`${FIELD} placeholder:text-slate-600`}
+                      />
+                    </div>
                     <div className="flex items-center shrink-0">
                       <IconButton label={`Move step ${n} up`} disabled={isPlaying || i === 0} onClick={() => onChange(moveStep(steps, i, -1))}>
                         <ChevronUp className="w-3.5 h-3.5" />
@@ -213,6 +237,9 @@ export function SequenceEditor({ activeSongMap, currentSectionIndex, startSectio
           >
             <Plus className="w-3.5 h-3.5" aria-hidden="true" /> Add step
           </button>
+          {steps.length > 0 && !isPlaying && (
+            <ActionButton onClick={() => downloadMidi(activeSongMap.title, steps)} Icon={Download}>Export MIDI</ActionButton>
+          )}
           {isPlaying && <p className="text-[11px] text-slate-400 text-center">Stop playback to edit steps.</p>}
         </>
       )}

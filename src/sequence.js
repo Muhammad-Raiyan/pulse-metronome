@@ -24,7 +24,9 @@ export function makeStep(values = {}, defaults = {}) {
   const beatAccents = Array.isArray(v.beatAccents) && v.beatAccents.length === beatsPerBar
     ? v.beatAccents.map(Number)
     : [0, ...Array(beatsPerBar - 1).fill(1)];
-  return {
+  // pc: optional MIDI Program Change (0–127) fired at section start — used for MIDI export
+  const pc = Number.isInteger(v.pc) && v.pc >= 0 && v.pc <= 127 ? v.pc : undefined;
+  const step = {
     id: newId(),
     name: typeof v.name === 'string' ? v.name : '',
     bars: clampInt(v.bars, 1, MAX_STEP_BARS, DEFAULT_BARS),
@@ -34,6 +36,8 @@ export function makeStep(values = {}, defaults = {}) {
     repeats: clampInt(v.repeats, 1, MAX_REPEATS, 1),
     beatAccents,
   };
+  if (pc !== undefined) step.pc = pc;
+  return step;
 }
 
 // Editable working copy of a library song. Sections missing a value fall back to the song's own.
