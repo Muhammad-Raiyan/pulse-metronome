@@ -1,5 +1,6 @@
 import { Plus, Minus, Hand, VolumeX } from 'lucide-react';
 import { ACCENT_TYPES, ACCENT_LABELS, clampBpm } from '../constants';
+import { SessionTimer } from './SessionTimer';
 
 // Quick tempo steps, nearest to the middle first
 const QUICK_STEPS = [4, 8, 12, 16];
@@ -25,6 +26,7 @@ export function MainDisplay({
           <span className="text-7xl md:text-8xl font-black font-mono tracking-tighter text-slate-100">{bpm}</span>
           <span className="text-slate-400 font-bold text-lg">BPM</span>
         </div>
+        <SessionTimer isPlaying={isPlaying} />
       </div>
 
       {/* Main Beat Tile Grid with Clickable Accents */}

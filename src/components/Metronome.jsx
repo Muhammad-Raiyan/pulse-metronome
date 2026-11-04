@@ -1,5 +1,3 @@
-// src/components/Metronome.jsx
-
 import { lazy, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { Activity, ExternalLink, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../ThemeContext';
@@ -14,6 +12,7 @@ import { SongMapLoader } from './SongMapLoader';
 import { SequenceEditor } from './SequenceEditor';
 import { songToSequence, newSequence } from '../sequence';
 import { ShortcutsPanel } from './ShortcutsPanel';
+import { Uptime } from './Uptime';
 import { AUTOMATION_MODES, SPRINT_STRATEGIES, ACCENT_TYPES, DEFAULT_TRAINER, SUBDIVISION_OPTIONS, MIN_BPM, MAX_BPM, clampBpm } from '../constants';
 
 // Debug UI is only downloaded when debug mode is switched on
@@ -446,6 +445,9 @@ export function Metronome() {
     applySection(sections[0]);
   };
 
+  // The metronome column and the footer share this width, so the footer sits under the metronome
+  const mainColSpan = automationMode === AUTOMATION_MODES.SONG_MAP ? 'lg:col-span-8' : 'lg:col-span-7';
+
   return (
     <div className="min-h-dvh bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 md:p-6 font-sans">
       <div className="max-w-[88rem] w-full flex items-start justify-center gap-6">
@@ -454,7 +456,7 @@ export function Metronome() {
       <div className="flex-1 min-w-0 max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* LEFT COLUMN */}
-        <div className={`${automationMode === AUTOMATION_MODES.SONG_MAP ? 'lg:col-span-8' : 'lg:col-span-7'} space-y-6`}>
+        <div className={`${mainColSpan} space-y-6`}>
           <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 relative overflow-hidden flex flex-col items-center justify-between min-h-[340px] shadow-2xl">
             <HeaderBanner
               isPlaying={isPlaying}
@@ -537,36 +539,38 @@ export function Metronome() {
           )}
         </div>
 
-      </div>
-      </div>
+        {/* Own grid row under the metronome column, so it centres on that panel and not the whole page */}
+        <footer className={`${mainColSpan} flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-slate-400`}>
+          <a
+            href="https://github.com/Muhammad-Raiyan/pulse-metronome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+          >
+            <ExternalLink className="w-3 h-3" aria-hidden="true" />
+            View source on GitHub
+          </a>
+          <button
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+          >
+            {theme === 'dark' ? <Sun className="w-3 h-3" aria-hidden="true" /> : <Moon className="w-3 h-3" aria-hidden="true" />}
+            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
+          <button
+            onClick={toggleDebug}
+            aria-pressed={debugOn}
+            className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
+          >
+            <Activity className="w-3 h-3" aria-hidden="true" />
+            Debug: {debugOn ? 'on' : 'off'}
+          </button>
+          <Uptime />
+        </footer>
 
-      <footer className="mt-6 flex items-center justify-center gap-4 text-[11px] text-slate-400">
-        <a
-          href="https://github.com/Muhammad-Raiyan/pulse-metronome"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
-        >
-          <ExternalLink className="w-3 h-3" aria-hidden="true" />
-          View source on GitHub
-        </a>
-        <button
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
-        >
-          {theme === 'dark' ? <Sun className="w-3 h-3" aria-hidden="true" /> : <Moon className="w-3 h-3" aria-hidden="true" />}
-          {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-        </button>
-        <button
-          onClick={toggleDebug}
-          aria-pressed={debugOn}
-          className="inline-flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
-        >
-          <Activity className="w-3 h-3" aria-hidden="true" />
-          Debug: {debugOn ? 'on' : 'off'}
-        </button>
-      </footer>
+      </div>
+      </div>
 
       {debugOn && (
         <Suspense fallback={null}>

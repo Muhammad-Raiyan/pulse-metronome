@@ -4,6 +4,8 @@
 
 A zero-lag, production-ready Progressive Web Application (PWA) metronome built for precision practicing, rehearsal, and live performance. Powered by the **Web Audio API** and a **Web Worker lookahead scheduler**, Pulse Metronome delivers sample-accurate note timing that stays steady even when the tab is in the background.
 
+**🔗 Live app: [muhammad-raiyan.github.io/pulse-metronome](https://muhammad-raiyan.github.io/pulse-metronome/)**
+
 ---
 
 ## ✨ Features
@@ -17,9 +19,23 @@ A zero-lag, production-ready Progressive Web Application (PWA) metronome built f
   - **Inner Clock Mute Trainer**: Alternates between active audio bars and silent bars to test your internal timing.
   - **Multi-Section Song Maps**: Automatically transition tempos, time signatures, and subdivisions on section downbeats.
 - 🎵 **Song & Preset Library (`songs.json`)**: Search by title, artist, or album to instantly load multi-tempo song maps with zero cloud hosting costs ($0 deployment).
+- 📝 **Sequence Editor**: Start a new sequence or edit a loaded song as a list of steps. Each step has its own name, bars, repeats, tempo, meter, subdivision, and per-beat accents. Reorder, duplicate, or remove steps, and start or loop from any step. The list is locked while playing.
+- 🎹 **MIDI Export**: Download a sequence as a Type 1 `.mid` file with tempo, click track, and section markers, plus an optional MIDI Program Change (0–127) per step.
+- ⏱️ **Practice Timer**: A clock under the BPM display counts while the metronome plays, freezes when you stop, and restarts from zero on the next run.
+- 🕒 **Uptime**: The footer shows how long the app has been open, as `H:MM`.
 - 📱 **Mobile-First PWA Support**: Installable on iOS Safari and Android Chrome as a standalone, offline-ready app with native status bar theme blending (`black-translucent`).
 - 💡 **Screen Wake Lock**: Keeps your mobile or laptop screen awake while practicing.
-- ⌨️ **Keyboard Shortcuts**: Spacebar (Start/Stop), Up/Down arrows ($\pm 1$, Shift $\pm 4$, Alt $\pm 8$), and 'T' for Tap Tempo.
+- ⌨️ **Keyboard Shortcuts**: A shortcuts panel appears beside the metronome on desktop screens:
+
+  | Key | Action |
+  | --- | --- |
+  | `Space` | Start / stop |
+  | `↑` / `↓` | Subdivision +1 / −1 |
+  | `Shift` + `↑` / `↓` | Time signature ±1 |
+  | `→` / `←` | Tempo +4 / −4 |
+  | `Shift` + `→` / `←` | Tempo +8 / −8 |
+  | `Alt` + `→` / `←` | Tempo +1 / −1 |
+  | `T` | Tap tempo |
 
 ---
 
@@ -119,7 +135,7 @@ Fallback from your own machine (publishes to the `gh-pages` branch, which only w
 npm run deploy
 ```
 
-The app is live at `https://muhammad-raiyan.github.io/pulse-metronome/`.
+The app is live at [https://muhammad-raiyan.github.io/pulse-metronome/](https://muhammad-raiyan.github.io/pulse-metronome/).
 
 ---
 
